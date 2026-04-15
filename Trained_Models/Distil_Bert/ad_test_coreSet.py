@@ -24,6 +24,12 @@ import sys
 from utils import str2bool, load_pickle, save_pickle, set_seed
 #for time check
 import time
+import psutil
+
+def get_memory_usage():
+    """Returns current memory usage of the process in MB."""
+    process = psutil.Process(os.getpid())
+    return process.memory_info().rss / (1024 * 1024)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
@@ -51,8 +57,14 @@ def get_threshold_roc(score, test_label, not_to_numpy=False):
     print('Best Threshold=%f, sensitivity = %.3f, specificity = %.3f, J=%.3f' % (best_thresh, tpr[ix], 1-fpr[ix], J[ix]))
     return best_thresh
 
-def get_detection_score(label, pred, time_list,exp_name = 'current_exp', result_df=None):
-    time_for_get_coreSet, time_for_cal_maxsim, time_for_get_adscore_for_all = time_list
+def get_detection_score(label, pred, time_list, memory_val, exp_name = 'current_exp', result_df=None):
+    time_for_get_coreSet, time_for_cal_maxsim, time_for_get_adscore_for_all, total_detection_time = time_list
+    # Calculate Avg Response Time (Time to score / Number of test samples)
+    avg_response_time = total_detection_time / len(label) if len(label) > 0 else 0
+
+    print(f'Memory Usage: {memory_val:.2f} MB')
+    print(f'Overall Detection Time: {total_detection_time:.4f} s')
+    print(f'Avg Response Time per Log: {avg_response_time:.6f} s')
     # get detection score
     print(f'confusion_matrix: \n{confusion_matrix(label, pred)}')
     print(f'accuracy_score: {accuracy_score(label, pred)}')
@@ -75,9 +87,12 @@ def get_detection_score(label, pred, time_list,exp_name = 'current_exp', result_
         result_df['coreSet_time'] = [time_for_get_coreSet]
         result_df['maxsim_time'] = [time_for_cal_maxsim]
         result_df['lookup_all_adscore_time'] = [time_for_get_adscore_for_all]
+        result_df['memory_mb'] = [memory_val]
+        result_df['avg_response_time'] = [avg_response_time]
+        result_df['overall_detection_time'] = [total_detection_time]
     else:
         result_df.loc[exp_name] = [f1_score(label, pred),roc_auc_score(label, pred), precision_score(label, pred), recall_score(label, pred), accuracy_score(label, pred), 
-                                   time_for_get_coreSet, time_for_cal_maxsim, time_for_get_adscore_for_all]
+                                   time_for_get_coreSet, time_for_cal_maxsim, time_for_get_adscore_for_all, memory_val, avg_response_time, total_detection_time]
     return result_df
 
 def get_threshold_pred_distance(score, test_label, desc='make maxsim_ori using lookup'):
@@ -133,6 +148,8 @@ def divide_cal(test_rep_chunk, train_representations, train_neighbor_index, test
     return test_scores_log_chunk, test_mean_coreSet_scores_chunk, test_idx
 
 if __name__ == '__main__':
+    overall_start_time = time.time() # Start Total Program Timer
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--plm', type=str, default='bert-base-uncased')
     parser.add_argument('--seed', type=int, default=1234, help='random seed (default: 1234)')
@@ -209,6 +226,9 @@ if __name__ == '__main__':
     test_label = load_pickle(os.path.join(processed_data_path,'test_label'))
     test_representations = load_pickle(os.path.join(processed_data_path,'test_representations'))
     test_unique_lookup_table = load_pickle(os.path.join(processed_data_path,'test_unique_lookup_table'))  
+
+    # Start Detection Logic
+    detection_start_clock = time.time()
 
     if args.train_ratio != 1:
         print(f'original unique train size: {train_representations.shape}')
@@ -323,7 +343,7 @@ if __name__ == '__main__':
 
         test_scores_log = np.array([])
         test_mean_coreSet_scores = np.array([])
-        num_chunk = 100
+        num_chunk = 50
         print(f'train: {train_representations.shape}, test: {test_representations.shape}')
 
         test_chunks = torch.chunk(test_representations, num_chunk, dim=0)
@@ -357,7 +377,10 @@ if __name__ == '__main__':
 
         # for mean_coreSet_score version     
         mean_coreSet_maxsim_pred, mean_coreSet_time = get_threshold_pred_distance(test_mean_coreSet_scores, test_label, desc='make mean maxsim using lookup')
-
+        
+        # Finalize Timings
+        overall_detection_time = time.time() - detection_start_clock
+        memory_used = get_memory_usage()
 
         print('='*50)
         print('save times')
@@ -365,17 +388,20 @@ if __name__ == '__main__':
         print('time_for_cal_maxsim:', time_for_cal_maxsim)
         print('time_for_get_adscore_for_all:', time_for_get_adscore_for_all)
         print('='*50)
-        time_list=(time_for_get_coreSet,time_for_cal_maxsim, time_for_get_adscore_for_all)
+        time_list=(time_for_get_coreSet,time_for_cal_maxsim, time_for_get_adscore_for_all, overall_detection_time)
 
         print('-'*50)
         print('K=1')
-        results_df=get_detection_score(test_label['label'], knn_pred,time_list, exp_name = f'K=1{result_name}', result_df=None)
+        results_df=get_detection_score(test_label['label'], knn_pred,time_list, memory_used, exp_name = f'K=1{result_name}', result_df=None)
         print('='*50)
         print('only ColBERT by all test')
-        results_df=get_detection_score(test_label['label'], maxsim_pred,time_list, exp_name = f'ColBERT{result_name}', result_df=results_df)
+        results_df=get_detection_score(test_label['label'], maxsim_pred,time_list, memory_used, exp_name = f'ColBERT{result_name}', result_df=results_df)
         print('='*50)
         print('mean_coreSet_score version')   
-        results_df=get_detection_score(test_label['label'], mean_coreSet_maxsim_pred,time_list, exp_name = f'mean ColBERT{result_name}', result_df=results_df)
+        results_df=get_detection_score(test_label['label'], mean_coreSet_maxsim_pred,time_list, memory_used, exp_name = f'mean ColBERT{result_name}', result_df=results_df)
+
+        total_program_time = time.time() - overall_start_time
+        print(f"Overall Time to run dataset (incl. loading): {total_program_time:.2f}s")
     # Restore the standard output
     sys.stdout = sys.__stdout__
 
@@ -383,6 +409,7 @@ if __name__ == '__main__':
     f.close()
 
     #save result
+    results_df['total_run_time'] = total_program_time
     results_df.to_csv(os.path.join(save_path, f'{exp_log_file_name}_df.csv'))
     #also save result_df as dict
     result_dict={f'{exp_log_file_name}':results_df.to_dict()}

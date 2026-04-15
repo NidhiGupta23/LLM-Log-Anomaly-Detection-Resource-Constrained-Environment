@@ -82,9 +82,9 @@ Process:
 - F1-score
 - ROC-AUC
 - Confusion Matrix
-- Response time to detect anomalies (to be done)
-- Overall time to execute whole dataset (to be done)
-- Memory consumption (to be done)
+- Response time to detect anomalies
+- Overall time to execute whole dataset
+- Memory consumption
 
 ## Execution steps
 - python split_data.py --dataset bgl --test_size 0.2 

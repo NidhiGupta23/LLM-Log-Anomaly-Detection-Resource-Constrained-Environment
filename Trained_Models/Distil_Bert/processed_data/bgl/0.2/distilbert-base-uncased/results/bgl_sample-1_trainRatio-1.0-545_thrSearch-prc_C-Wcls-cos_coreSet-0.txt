@@ -2,16 +2,19 @@ score is ordered by the score
 ==================================================
 start calculating colbert score
 train: torch.Size([545, 128, 768]), test: torch.Size([551, 128, 768])
-num_chunk: 100, num_each_chunk: 6
-92th chunk is not exist: number of unique is less than num_chunk
+num_chunk: 50, num_each_chunk: 12
+46th chunk is not exist: number of unique is less than num_chunk
 ==================================================
 save times
-time_for_get_coreSet: 0.053388357162475586
-time_for_cal_maxsim: 48.98921036720276
-time_for_get_adscore_for_all: 0.22605180740356445
+time_for_get_coreSet: 0.034400224685668945
+time_for_cal_maxsim: 48.06822156906128
+time_for_get_adscore_for_all: 0.22588419914245605
 ==================================================
 --------------------------------------------------
 K=1
+Memory Usage: 1126.36 MB
+Overall Detection Time: 49.0011 s
+Avg Response Time per Log: 0.000086 s
 confusion_matrix: 
 [[451069      5]
  [     1 118611]]
@@ -31,6 +34,9 @@ weighted avg       1.00      1.00      1.00    569686
 
 ==================================================
 only ColBERT by all test
+Memory Usage: 1126.36 MB
+Overall Detection Time: 49.0011 s
+Avg Response Time per Log: 0.000086 s
 confusion_matrix: 
 [[451070      4]
  [     1 118611]]
@@ -50,6 +56,9 @@ weighted avg       1.00      1.00      1.00    569686
 
 ==================================================
 mean_coreSet_score version
+Memory Usage: 1126.36 MB
+Overall Detection Time: 49.0011 s
+Avg Response Time per Log: 0.000086 s
 confusion_matrix: 
 [[366841  84233]
  [ 62781  55831]]
@@ -67,3 +76,4 @@ roc_auc_score: 0.6419820172011815
    macro avg       0.63      0.64      0.63    569686
 weighted avg       0.76      0.74      0.75    569686
 
+Overall Time to run dataset (incl. loading): 54.87s
