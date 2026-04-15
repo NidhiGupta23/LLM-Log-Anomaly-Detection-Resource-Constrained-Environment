@@ -1,0 +1,69 @@
+score is ordered by the score
+==================================================
+start calculating colbert score
+train: torch.Size([545, 128, 768]), test: torch.Size([551, 128, 768])
+num_chunk: 100, num_each_chunk: 6
+92th chunk is not exist: number of unique is less than num_chunk
+==================================================
+save times
+time_for_get_coreSet: 0.053388357162475586
+time_for_cal_maxsim: 48.98921036720276
+time_for_get_adscore_for_all: 0.22605180740356445
+==================================================
+--------------------------------------------------
+K=1
+confusion_matrix: 
+[[451069      5]
+ [     1 118611]]
+accuracy_score: 0.9999894678823071
+f1_score: 0.9999747078759674
+precision_score: 0.9999578471707021
+recall_score: 0.9999915691498331
+roc_auc_score: 0.9999902422470501
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00    451074
+           1       1.00      1.00      1.00    118612
+
+    accuracy                           1.00    569686
+   macro avg       1.00      1.00      1.00    569686
+weighted avg       1.00      1.00      1.00    569686
+
+==================================================
+only ColBERT by all test
+confusion_matrix: 
+[[451070      4]
+ [     1 118611]]
+accuracy_score: 0.9999912232352559
+f1_score: 0.9999789231411265
+precision_score: 0.9999662774522615
+recall_score: 0.9999915691498331
+roc_auc_score: 0.9999913507126235
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00    451074
+           1       1.00      1.00      1.00    118612
+
+    accuracy                           1.00    569686
+   macro avg       1.00      1.00      1.00    569686
+weighted avg       1.00      1.00      1.00    569686
+
+==================================================
+mean_coreSet_score version
+confusion_matrix: 
+[[366841  84233]
+ [ 62781  55831]]
+accuracy_score: 0.741938541582556
+f1_score: 0.4316674140623792
+precision_score: 0.39861063513822254
+recall_score: 0.47070279566991535
+roc_auc_score: 0.6419820172011815
+              precision    recall  f1-score   support
+
+           0       0.85      0.81      0.83    451074
+           1       0.40      0.47      0.43    118612
+
+    accuracy                           0.74    569686
+   macro avg       0.63      0.64      0.63    569686
+weighted avg       0.76      0.74      0.75    569686
+
