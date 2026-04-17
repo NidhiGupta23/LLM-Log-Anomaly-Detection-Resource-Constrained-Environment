@@ -1,0 +1,15 @@
+# Core ML / LLM
+torch>=2.1.0
+transformers>=4.40.0
+accelerate>=0.27.0
+
+# Optional: 4-bit quantisation (--use_4bit flag, CUDA only)
+bitsandbytes>=0.43.0
+
+# Metrics
+scikit-learn>=1.4.0
+
+# Utilities
+numpy>=1.24.0
+psutil>=5.9.0
+tqdm>=4.66.0
