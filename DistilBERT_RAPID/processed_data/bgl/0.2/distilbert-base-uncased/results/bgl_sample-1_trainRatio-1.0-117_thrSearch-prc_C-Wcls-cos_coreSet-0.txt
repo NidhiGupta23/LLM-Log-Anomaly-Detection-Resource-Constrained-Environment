@@ -1,0 +1,79 @@
+score is ordered by the score
+==================================================
+start calculating colbert score
+train: torch.Size([117, 128, 768]), test: torch.Size([74, 128, 768])
+num_chunk: 50, num_each_chunk: 2
+37th chunk is not exist: number of unique is less than num_chunk
+==================================================
+save times
+time_for_get_coreSet: 0.10277080535888672
+time_for_cal_maxsim: 0.2809281349182129
+time_for_get_adscore_for_all: 0.0006244182586669922
+==================================================
+--------------------------------------------------
+K=1
+Memory Usage: 748.80 MB
+Overall Detection Time: 0.3959 s
+Avg Response Time per Log: 0.000769 s
+confusion_matrix: 
+[[369   3]
+ [  1 142]]
+accuracy_score: 0.9922330097087378
+f1_score: 0.9861111111111112
+precision_score: 0.9793103448275862
+recall_score: 0.993006993006993
+roc_auc_score: 0.9924712384389803
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      0.99       372
+           1       0.98      0.99      0.99       143
+
+    accuracy                           0.99       515
+   macro avg       0.99      0.99      0.99       515
+weighted avg       0.99      0.99      0.99       515
+
+==================================================
+only ColBERT by all test
+Memory Usage: 748.80 MB
+Overall Detection Time: 0.3959 s
+Avg Response Time per Log: 0.000769 s
+confusion_matrix: 
+[[369   3]
+ [  1 142]]
+accuracy_score: 0.9922330097087378
+f1_score: 0.9861111111111112
+precision_score: 0.9793103448275862
+recall_score: 0.993006993006993
+roc_auc_score: 0.9924712384389803
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      0.99       372
+           1       0.98      0.99      0.99       143
+
+    accuracy                           0.99       515
+   macro avg       0.99      0.99      0.99       515
+weighted avg       0.99      0.99      0.99       515
+
+==================================================
+mean_coreSet_score version
+Memory Usage: 748.80 MB
+Overall Detection Time: 0.3959 s
+Avg Response Time per Log: 0.000769 s
+confusion_matrix: 
+[[ 14 358]
+ [  0 143]]
+accuracy_score: 0.3048543689320388
+f1_score: 0.4440993788819876
+precision_score: 0.28542914171656686
+recall_score: 1.0
+roc_auc_score: 0.5188172043010753
+              precision    recall  f1-score   support
+
+           0       1.00      0.04      0.07       372
+           1       0.29      1.00      0.44       143
+
+    accuracy                           0.30       515
+   macro avg       0.64      0.52      0.26       515
+weighted avg       0.80      0.30      0.18       515
+
+Overall Time to run dataset (incl. loading): 0.75s
