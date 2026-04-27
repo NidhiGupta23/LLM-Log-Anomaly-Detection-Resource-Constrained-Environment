@@ -1,0 +1,27 @@
+{
+  "accuracy": 0.8753117206982544,
+  "precision": 0.3670886075949367,
+  "recall": 1.0,
+  "f1_score": 0.5370370370370371,
+  "roc_auc": 0.9327956989247312,
+  "confusion_matrix": [
+    [
+      322,
+      50
+    ],
+    [
+      0,
+      29
+    ]
+  ],
+  "overall_time_to_execute_dataset_sec": 184.99544024467468,
+  "avg_time_per_log_ms": 461.3352624555478,
+  "num_samples": 401,
+  "rule_count": 276,
+  "deepseek_count": 125,
+  "cpu_memory_start_mb": 7703.51171875,
+  "cpu_memory_end_mb": 7867.015625,
+  "cpu_memory_peak_mb": 7867.015625,
+  "cpu_memory_delta_mb": 163.50390625,
+  "system_memory_percent": 9.4
+}

@@ -39,6 +39,8 @@ _ABNORMAL_TERMINATION = [
 _ABNORMAL_STORAGE = [
     "lustre mount failed",
     "lustre mount error",
+    "data tlb error interrupt",
+    "data storage interrupt",
 ]
 
 '''# Abnormal: network / socket / IPC failures
@@ -103,7 +105,8 @@ NORMAL_CONTENT_PATTERNS: list[str] = [
     "generating core",
     "ciod: error loading",
     "ciod: generated",
-    "info"
+    "info",
+    "ASSERT condition: ASSERT expression=0",
     # Self-corrected hardware errors
     "detected and corrected",
     "cache parity error corrected",
