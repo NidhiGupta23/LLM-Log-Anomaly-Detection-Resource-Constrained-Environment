@@ -1,3 +1,11 @@
+## Models and logs details
+Model loaded on : cpu
+
+Loading logs …
+  Normal logs   : 1,857
+  Abnormal logs : 143
+  Total logs    : 2,000  (shuffled, no train/test split)
+
 ## Prompt
 SYSTEM_PROMPT = """\
 You are a BGL (Blue Gene/L) log anomaly classifier.
