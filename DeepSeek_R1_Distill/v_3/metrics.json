@@ -1,0 +1,29 @@
+{
+  "accuracy": 0.770573566084788,
+  "precision": 0.2396694214876033,
+  "recall": 1.0,
+  "f1_score": 0.38666666666666666,
+  "confusion_matrix": [
+    [
+      280,
+      92
+    ],
+    [
+      0,
+      29
+    ]
+  ],
+  "total_time_sec": 105.27058053016663,
+  "avg_ms_per_log": 262.5201509480464,
+  "num_samples": 401,
+  "rule_count": 263,
+  "deepseek_count": 138,
+  "cpu_memory_start_mb": 7705.92578125,
+  "cpu_memory_end_mb": 7805.046875,
+  "cpu_memory_peak_mb": 7805.2421875,
+  "cpu_memory_delta_mb": 99.12109375,
+  "system_memory_percent": 9.7,
+  "gpu_memory_start_mb": 0.0,
+  "gpu_memory_end_mb": 0.0,
+  "gpu_memory_delta_mb": 0.0
+}
