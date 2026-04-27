@@ -31,9 +31,11 @@ _ABNORMAL_TERMINATION = [
     "ciod: exiting",
     "ciod: terminating",
     "killed by signal",
+    "error receiving packet on tree network",
+    "link has been severed",
 ]
 
-# Abnormal: network / socket / IPC failures
+'''# Abnormal: network / socket / IPC failures
 _ABNORMAL_NETWORK = [
     "error receiving packet on tree network",   # expecting type …
     "link has been severed",
@@ -73,6 +75,9 @@ ABNORMAL_CONTENT_PATTERNS: list[str] = (
     + _ABNORMAL_NETWORK
     + _ABNORMAL_STORAGE
     + _ABNORMAL_ILLEGAL
+)'''
+ABNORMAL_CONTENT_PATTERNS: list[str] = (
+    _ABNORMAL_TERMINATION
 )
 
 # ---------------------------------------------------------------------------
@@ -91,6 +96,7 @@ NORMAL_CONTENT_PATTERNS: list[str] = [
     "generating core",
     "ciod: error loading",
     "ciod: generated",
+    "info"
     # Self-corrected hardware errors
     "detected and corrected",
     "cache parity error corrected",
