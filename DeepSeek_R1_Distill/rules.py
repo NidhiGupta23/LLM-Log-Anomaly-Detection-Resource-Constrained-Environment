@@ -35,6 +35,12 @@ _ABNORMAL_TERMINATION = [
     "link has been severed",
 ]
 
+# Abnormal: storage / mount failures
+_ABNORMAL_STORAGE = [
+    "lustre mount failed",
+    "lustre mount error",
+]
+
 '''# Abnormal: network / socket / IPC failures
 _ABNORMAL_NETWORK = [
     "error receiving packet on tree network",   # expecting type …
@@ -78,6 +84,7 @@ ABNORMAL_CONTENT_PATTERNS: list[str] = (
 )'''
 ABNORMAL_CONTENT_PATTERNS: list[str] = (
     _ABNORMAL_TERMINATION
+    + _ABNORMAL_STORAGE
 )
 
 # ---------------------------------------------------------------------------
