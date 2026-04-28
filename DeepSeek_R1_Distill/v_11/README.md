@@ -1,46 +1,4 @@
-"""
-Rule-based labelling for structured BGL log entries.
- 
-Rules operate on the parsed BGLEntry fields rather than raw text, which
-avoids false matches on metadata columns (node IDs, timestamps, etc.).
- 
-Matching strategy
------------------
-All pattern matching is case-insensitive against entry.content.
- 
-Label priority
---------------
-  1. ABNORMAL content rules  — highest confidence, checked first
-  2. NORMAL   content rules  — benign diagnostics / self-healing events
-  3. None                    — uncertain, fall through to the LLM
- 
-Design notes (derived from real BGL log analysis)
---------------------------------------------------
-- "program interrupt" is a NORMAL register-dump line (RAS KERNEL INFO).
-  It was mistakenly listed as abnormal in earlier versions.
-- "machine check" at INFO level (e.g. "MACHINE CHECK DCR read timeout")
-  is a self-reporting diagnostic — normal.  Only a bare "machine check
-  interrupt" at FATAL with no further context is truly abnormal.
-- "ciod: error" is too broad as a catch-all: "ciod: LOGIN chdir(...) failed:
-  No such file or directory" is NORMAL (missing workdir, job continues).
-  Use specific ciod sub-patterns instead.
-- "idoproxydb hit ASSERT condition: … Source line=1043" is a recurring MMCS
-  transport-layer probe — benign, classified NORMAL.
-- "iar … dear …" register dump lines are NORMAL (instruction/data address
-  registers printed during a handled exception).
-- "tree receiver … in re-synch state" is NORMAL (self-healing resync).
-- "ciod: pollControlDescriptors: Detected the debugger died" is NORMAL
-  (debugger detach, not a crash).
-- "Ido chip status changed" (NULL DISCOVERY INFO) is NORMAL (topology probe).
-- "correctable ddr" / "rbs signal handler" timing summary lines are NORMAL.
-"""
-
-from typing import TYPE_CHECKING, Optional
-
-if TYPE_CHECKING:
-    from data import BGLEntry
-
-
+## Prompts
 # ---------------------------------------------------------------------------
 # Content patterns — matched against entry.content (case-insensitive)
 # ---------------------------------------------------------------------------
@@ -408,29 +366,49 @@ EXPECTED_CLASSIFICATION_HINTS = {
     "LOGIN chdir(... No such file or directory)": 0,
 }
 
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
 
-def rule_based_label(entry: "BGLEntry") -> Optional[int]:
-    """
-    Classify a parsed BGLEntry using deterministic rules.
+## Results
 
-    Returns:
-        1  – ABNORMAL (high confidence)
-        0  – NORMAL   (high confidence)
-        None – uncertain; let the LLM decide
-    """
-    content_lower = entry.content.lower()
+EVALUATION RESULTS
+======================================================================
 
-    # --- Abnormal content rules ---
-    for pattern in ABNORMAL_CONTENT_PATTERNS:
-        if pattern in content_lower:
-            return 1
+Evaluation Metrics:
+  Accuracy  : 1.0000
+  Precision : 1.0000
+  Recall    : 1.0000
+  F1-score  : 1.0000
+  ROC-AUC   : 1.0000
 
-    # --- Normal content rules ---
-    for pattern in NORMAL_CONTENT_PATTERNS:
-        if pattern in content_lower:
-            return 0
+Confusion Matrix:
+                  Pred Normal  Pred Abnormal
+  Actual Normal         372            0
+  Actual Abnormal         0           29
 
-    return None
+Timing:
+  Overall time   : 13.16 sec
+  Avg per log    : 32.81 ms
+
+Memory:
+  Start RSS      : 7703.3 MB
+  End RSS        : 8114.5 MB
+  Peak RSS       : 8114.5 MB
+  Delta RSS      : 411.2 MB
+  System RAM     : 9.8%
+
+Routing:
+  Rule-based     : 393
+  DeepSeek       : 8
+  Total          : 401
+
+Classification Report:
+              precision    recall  f1-score   support
+
+  Normal (0)       1.00      1.00      1.00       372
+Abnormal (1)       1.00      1.00      1.00        29
+
+    accuracy                           1.00       401
+   macro avg       1.00      1.00      1.00       401
+weighted avg       1.00      1.00      1.00       401
+
+
+Misclassified: 0 / 401
