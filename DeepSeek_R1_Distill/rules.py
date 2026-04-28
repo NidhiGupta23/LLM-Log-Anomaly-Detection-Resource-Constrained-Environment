@@ -105,8 +105,18 @@ NORMAL_CONTENT_PATTERNS: list[str] = [
     "generating core",
     "ciod: error loading",
     "ciod: generated",
-    "info",
     "ASSERT condition: ASSERT expression=0",
+    "machine check enable",
+    "INFO: program interrupt",
+    "iar dear ",
+    "data cache search parity error detected. attempting to correct",
+    "program interrupt:",
+    "ERROR idoproxydb hit ASSERT condition",
+    "0 critical input interrupts",
+    "Source line=1043",
+    "wait state enable",
+    "disable store gathering",
+    "icache prefetch threshold",
     # Self-corrected hardware errors
     "detected and corrected",
     "cache parity error corrected",
@@ -117,6 +127,8 @@ NORMAL_CONTENT_PATTERNS: list[str] = [
     # Transient mount / network retries that succeed
     "nfs mount failed",   # always followed by "retrying" — benign
     "retrying",
+    "errno=0",
+    "data store interrupt caused by icbi",
 ]
 
 
