@@ -1,0 +1,124 @@
+{"line_no": 1, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 2, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 3, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 4, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 5, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 6, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 7, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 8, "verdict": "ABNORMAL", "reason": "RAS kernels indicate normal operations"}
+{"line_no": 11, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 12, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 13, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 14, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 15, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 16, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 17, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 18, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 19, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 20, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 21, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 22, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 23, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 24, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 25, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 26, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 27, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 28, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 29, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 30, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 31, "verdict": "NORMAL", "reason": "The log entry indicates normal operation with a message about generating a core and a normal status."}
+{"line_no": 32, "verdict": "NORMAL", "reason": "The log entry is about generating a core with a corrected cache parity error, indicating normal operation."}
+{"line_no": 33, "verdict": "NORMAL", "reason": "The log entry is about generating a core with normal operation."}
+{"line_no": 34, "verdict": "NORMAL", "reason": "The log entry is about generating a core with normal operation."}
+{"line_no": 35, "verdict": "NORMAL", "reason": "The log entry is about generating a core with normal operation."}
+{"line_no": 36, "verdict": "NORMAL", "reason": "The log entry is about generating a core with normal operation."}
+{"line_no": 41, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operation"}
+{"line_no": 42, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operation"}
+{"line_no": 43, "verdict": "NORMAL", "reason": "RAS kernels indicate normal operation"}
+{"line_no": 44, "verdict": "ABNORMAL", "reason": "Network issues detected"}
+{"line_no": 51, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 52, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 53, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 54, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 55, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 56, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 57, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 58, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 59, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 60, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 61, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 62, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 63, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 64, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 65, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 66, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 67, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 68, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 69, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 70, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 71, "verdict": "NORMAL", "reason": "RASKernel INFO"}
+{"line_no": 72, "verdict": "NORMAL", "reason": "RASKernel INFO"}
+{"line_no": 73, "verdict": "NORMAL", "reason": "RASKernel INFO"}
+{"line_no": 74, "verdict": "NORMAL", "reason": "RASKernel INFO"}
+{"line_no": 75, "verdict": "NORMAL", "reason": "RASKernel INFO"}
+{"line_no": 81, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 82, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 83, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 84, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 85, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 86, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 87, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 88, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 89, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 90, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 91, "verdict": "NORMAL", "reason": "RAS,KERNEL,INFO,generating core.65"}
+{"line_no": 101, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 102, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 103, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 104, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 105, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 106, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 107, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 108, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 109, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 110, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 111, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 112, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 113, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 114, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 115, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 116, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 117, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 118, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 119, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 120, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 121, "verdict": "ABNORMAL", "reason": "Login failed due to file not found"}
+{"line_no": 122, "verdict": "ABNORMAL", "reason": "Login failed due to file not found"}
+{"line_no": 123, "verdict": "ABNORMAL", "reason": "Failed to read message prefix on CioStream socket"}
+{"line_no": 124, "verdict": "ABNORMAL", "reason": "Failed to read message prefix on CioStream socket"}
+{"line_no": 125, "verdict": "NORMAL", "reason": "Failed login to specific IP"}
+{"line_no": 126, "verdict": "NORMAL", "reason": "Failed login to specific IP"}
+{"line_no": 127, "verdict": "ABNORMAL", "reason": "Failed to read message prefix on CioStream socket"}
+{"line_no": 131, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 132, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 133, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 134, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 135, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 136, "verdict": "ABNORMAL", "reason": "No such file or directory"}
+{"line_no": 141, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 142, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 143, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 144, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 145, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 146, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 147, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 148, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 149, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 150, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 151, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 152, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 153, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 154, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 155, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 156, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}
+{"line_no": 157, "verdict": "UNKNOWN", "reason": "Model output could not be parsed"}

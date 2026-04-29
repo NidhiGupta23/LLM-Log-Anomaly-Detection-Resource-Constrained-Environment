@@ -1,0 +1,16 @@
+{
+  "total_lines_tested": 157,
+  "normal_count": 24,
+  "abnormal_count": 13,
+  "unknown_count": 87,
+  "total_execution_time_s": 21294.622,
+  "avg_batch_response_time_s": 1183.402,
+  "min_batch_response_time_s": 1158.584,
+  "max_batch_response_time_s": 1204.525,
+  "avg_per_line_response_time_s": 120.6015,
+  "memory_start_mb": 756.0,
+  "memory_end_mb": 7772.66,
+  "memory_delta_mb": 7016.66,
+  "device": "cpu",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+}
