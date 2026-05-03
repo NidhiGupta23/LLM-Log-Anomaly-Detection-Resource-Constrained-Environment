@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.7795,
+  "precision": 0.2395,
+  "recall": 0.958,
+  "f1": 0.3832,
+  "total_samples": 2000,
+  "anomaly_count": 143,
+  "predicted_anomaly_count": 572,
+  "parse_fallback_count": 6,
+  "avg_inference_time_ms": 147.36,
+  "total_inference_time_s": 294.71,
+  "classification_report": "              precision    recall  f1-score   support\n\n      Normal       1.00      0.77      0.87      1857\n   Anomalous       0.24      0.96      0.38       143\n\n    accuracy                           0.78      2000\n   macro avg       0.62      0.86      0.62      2000\nweighted avg       0.94      0.78      0.83      2000\n",
+  "roc_auc_from_hard_labels": 0.8619,
+  "note": "roc_auc_from_hard_labels is weak and kept only for compatibility; prefer probability or logit-based AUC when available."
+}
