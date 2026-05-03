@@ -1,0 +1,11 @@
+{
+  "precision": 0.0309,
+  "recall": 0.021,
+  "f1": 0.025,
+  "auc_roc": 0.4852,
+  "total_samples": 2000,
+  "anomaly_count": 143,
+  "predicted_anomaly_count": 97,
+  "avg_inference_time_ms": 329.08,
+  "total_inference_time_s": 658.15
+}
