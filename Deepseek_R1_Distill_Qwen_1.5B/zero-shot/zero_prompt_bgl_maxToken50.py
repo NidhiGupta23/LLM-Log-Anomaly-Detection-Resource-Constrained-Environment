@@ -5,6 +5,7 @@ import os
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
+import csv
 
 class BGLAnomalyClassifier:
     def __init__(self, model_name="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"):
@@ -36,7 +37,7 @@ class BGLAnomalyClassifier:
         # Recommended settings for DeepSeek-R1 models
         self.temperature = 0.4
         self.top_p = 0.95
-        self.max_new_tokens = 75  # We only need a short response (0 or 1)
+        self.max_new_tokens = 50  # We only need a short response (0 or 1)
 
     def create_prompt(self, log_line):
         """
@@ -51,11 +52,11 @@ class BGLAnomalyClassifier:
         </ Instructions >
         < Rules >
         - Respond ONLY with the single digit either 0 or 1, no explanations or whitespace.
-        - Respond as JSON with fields: {{"Label": "0" or "1", "line": "<log_line>"}}
+        - Respond as json file with fields: {{"Label": "0" or "1", "line": "<log_line>"}}
         </ Rules >
 
         Log line: {log_line}
-        Respond with JSON:"""
+        """
 
         return prompt
 
@@ -104,7 +105,7 @@ class BGLAnomalyClassifier:
         elif "1" in response:
             label = "1"
         else:
-            label = "0"  # Default to normal if parsing fails
+            label = "1"  # Default to abnormal if parsing fails
 
         return {"Label": label, "line": log_line.strip()}
 
@@ -168,6 +169,16 @@ def process_bgl_log(input_file, output_file, batch_size=4):
     with open(output_file, 'w', encoding='utf-8') as f:
         for result in results:
             f.write(json.dumps(result) + '\n')
+    '''# Write results to CSV file
+    print(f"\nWriting results to: {output_file}")
+
+    with open(output_file, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Label", "line"])  # header
+
+        for result in results:
+            writer.writerow([result["Label"], result["line"]])'''
+
 
     # Calculate final memory and time
     end_time = time.time()
@@ -226,12 +237,19 @@ def process_bgl_log(input_file, output_file, batch_size=4):
 
     print(f"\nDetailed statistics saved to: {stats_file}")
 
+    # Display sample results
+    print("\n" + "="*60)
+    print("SAMPLE CLASSIFICATIONS (First 10)")
+    print("="*60)
+    for i, result in enumerate(results[:10]):
+        print(f"{i+1}. {result}")
+
     return results, stats
 
 # Main execution
 if __name__ == "__main__":
-    input_file = "test_clean_500.log"
-    output_file = "bgl_deepseek_results.json"
+    input_file = "Test_500_no_label_sorted.log"
+    output_file = "bglDeepseekZero_maxToken50.json"
 
     # Check if input file exists
     if not os.path.exists(input_file):
