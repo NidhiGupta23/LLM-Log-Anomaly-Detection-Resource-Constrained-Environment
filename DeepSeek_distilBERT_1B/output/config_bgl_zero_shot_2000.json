@@ -1,0 +1,13 @@
+{
+  "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+  "mode": "zero_shot",
+  "batch_size": 4,
+  "max_input_tokens": 384,
+  "max_new_tokens": 4,
+  "temperature": 0.0,
+  "do_sample": false,
+  "n_eval": 2000,
+  "seed": 42,
+  "prompt_version": "v2_single_label_user_only",
+  "dataset": "BGL"
+}

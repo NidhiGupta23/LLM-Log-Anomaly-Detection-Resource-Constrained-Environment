@@ -1,0 +1,17 @@
+{
+  "total_logs": 500,
+  "time_taken_seconds": 164.94542241096497,
+  "avg_time_per_log_ms": 329.89084482192993,
+  "throughput_logs_per_second": 3.0313057051940464,
+  "memory_consumed_mb": 554.70703125,
+  "peak_cpu_memory_mb": 942.83203125,
+  "gpu_memory_mb": 3445.82958984375,
+  "normal_count": 99,
+  "abnormal_count": 401,
+  "normal_percentage": 19.8,
+  "abnormal_percentage": 80.2,
+  "model_used": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+  "batch_size": 4,
+  "temperature": 0.6,
+  "gpu_available": true
+}
