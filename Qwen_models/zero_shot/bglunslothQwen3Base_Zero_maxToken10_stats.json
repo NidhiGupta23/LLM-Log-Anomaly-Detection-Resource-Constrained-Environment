@@ -1,0 +1,18 @@
+{
+  "total_logs": 500,
+  "max_token": 10,
+  "model_used": "Qwen/Qwen3.5-4B",
+  "time_taken_seconds": 192.6495132446289,
+  "avg_time_per_log_ms": 385.2990264892578,
+  "throughput_logs_per_second": 2.59538678078617,
+  "memory_consumed_mb": 850.1953125,
+  "peak_cpu_memory_mb": 1388.625,
+  "gpu_memory_mb": 8177.2353515625,
+  "normal_count": 0,
+  "abnormal_count": 500,
+  "normal_percentage": 0.0,
+  "abnormal_percentage": 100.0,
+  "batch_size": 4,
+  "temperature": 0.6,
+  "gpu_available": true
+}
