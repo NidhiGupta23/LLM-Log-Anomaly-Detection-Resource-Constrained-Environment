@@ -1,0 +1,10 @@
+# Fine-tuning (GPU VM)
+torch
+transformers
+accelerate
+peft
+trl
+datasets
+
+# Evaluation (CPU or GPU)
+llama-cpp-python
