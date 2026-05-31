@@ -197,7 +197,7 @@
 {"Label": "1", "line": "1125358750 2005.08.29 R20-M1-N4-C:J09-U01 2005-08-29-16.39.10.047516 R20-M1-N4-C:J09-U01 RAS KERNEL INFO \"1 torus receiver x+ input pipe error(s) (dcr 0x02ec) detected and corrected\""}
 {"Label": "1", "line": "1125555382 2005.08.31 R51-M1-NC-I:J18-U11 2005-08-31-23.16.22.546580 R51-M1-NC-I:J18-U11 RAS KERNEL FATAL \"Lustre mount FAILED : bglio671 : point /p/gb1\""}
 {"Label": "0", "line": "1125575442 2005.09.01 R43-M1-N8-I:J18-U01 2005-09-01-04.50.42.634811 R43-M1-N8-I:J18-U01 RAS KERNEL FATAL \"Lustre mount FAILED : bglio574 : point /p/gb1\""}
-{"Label": "1", "line": "1125582538 2005.09.01 R06-M1-N6-C:J08-U01 2005-09-01-06.48.58.606474 R06-M1-N6-C:J08-U01 RAS KERNEL INFO \"CE sym 22, at 0x0a3c0760, mask 0x80\""}
+{"Label": "0", "line": "1125582538 2005.09.01 R06-M1-N6-C:J08-U01 2005-09-01-06.48.58.606474 R06-M1-N6-C:J08-U01 RAS KERNEL INFO \"CE sym 22, at 0x0a3c0760, mask 0x80\""}
 {"Label": "1", "line": "1125667180 2005.09.02 R65-M1-N4-I:J18-U11 2005-09-02-06.19.40.968502 R65-M1-N4-I:J18-U11 RAS APP FATAL \"ciod: LOGIN chdir(/bglscratch/bwallen/SWL/SYS-CALLS/testcases/kernel/syscalls/link) failed: No such file or directory\""}
 {"Label": "1", "line": "1125667789 2005.09.02 R61-M0-NC-I:J18-U01 2005-09-02-06.29.49.258992 R61-M0-NC-I:J18-U01 RAS APP FATAL \"ciod: LOGIN chdir(/bglscratch/bwallen/SWL/SYS-CALLS/testcases/kernel/syscalls/setitimer) failed: No such file or directory\""}
 {"Label": "1", "line": "1125668394 2005.09.02 R76-M0-N8-I:J18-U01 2005-09-02-06.39.54.356368 R76-M0-N8-I:J18-U01 RAS APP FATAL \"ciod: LOGIN chdir(/bglscratch/bwallen/SWL/SYS-CALLS/testcases/kernel/syscalls/write) failed: No such file or directory\""}

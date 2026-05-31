@@ -13,11 +13,11 @@ apt autoremove -y
 journalctl --vacuum-time=3d 
 
 
-#python3 Qwen_Instrcut_fewShotBgl4nm.py --output_file QwenInstructFs4nm10.json --max_token 10
-#python3 Qwen_Instrcut_fewShotBgl4ab.py  --output_file QwenInstructFs4ab10.json --max_token 10
-#python3 Qwen_Instrcut_fewShotBgl2ab2nm.py --output_file QwenInstructFs2ab2nm10.json --max_token 10
-#python3 Qwen_Instrcut_fewShotBgl1ab3nm.py --output_file QwenInstructFs1ab3nm10.json --max_token 10
-#python3 Qwen_Instrcut_fewShotBgl3ab1nm.py --output_file QwenInstructFs3ab1nm10.json --max_token 10
+python3 Qwen_Instrcut_fewShotBgl4nm.py --output_file QwenInstructFs4nm10.json --max_token 10
+python3 Qwen_Instrcut_fewShotBgl4ab.py  --output_file QwenInstructFs4ab10.json --max_token 10
+python3 Qwen_Instrcut_fewShotBgl2ab2nm.py --output_file QwenInstructFs2ab2nm10.json --max_token 10
+python3 Qwen_Instrcut_fewShotBgl1ab3nm.py --output_file QwenInstructFs1ab3nm10.json --max_token 10
+python3 Qwen_Instrcut_fewShotBgl3ab1nm.py --output_file QwenInstructFs3ab1nm10.json --max_token 10
 python3 Qwen_4B_fewShotBgl4nm.py --output_file Qwen4BFs4nm10.json --max_token 10
 python3 Qwen_4B_fewShotBgl4ab.py  --output_file Qwen4BFs4ab10.json --max_token 10
 python3 Qwen_4B_fewShotBgl2ab2nm.py --output_file Qwen4BFs2ab2nm10.json --max_token 10
