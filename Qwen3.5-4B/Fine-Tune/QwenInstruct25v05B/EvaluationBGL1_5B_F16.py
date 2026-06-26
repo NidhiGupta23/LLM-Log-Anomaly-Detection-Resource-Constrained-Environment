@@ -33,6 +33,25 @@ except ImportError:
 
 
 
+def percentile(values: list, q: float) -> float:
+    """
+    Compute percentile q from a list of numeric values.
+    q should be between 0 and 100.
+    """
+    if not values:
+        return 0.0
+
+    values = sorted(values)
+    k = (len(values) - 1) * (q / 100)
+    f = int(k)
+    c = min(f + 1, len(values) - 1)
+
+    if f == c:
+        return values[f]
+
+    return values[f] + (values[c] - values[f]) * (k - f)
+
+
 
 # ===========================================================================
 # METRICS COLLECTION
@@ -61,6 +80,19 @@ class PerfMetrics:
         self.cpu_ram_used_mb     = 0.0   # RSS delta over the inference loop
         self.peak_cpu_memory_mb  = 0.0   # peak RSS seen during the run
         self._rss_at_start       = 0.0
+        self.cpu_cores_available = os.cpu_count() or 0
+        self.cpu_time_used_seconds = 0.0
+        self.avg_cpu_cores_used = 0.0
+        self._cpu_time_start = 0.0
+        self._rss_samples_mb = []
+        self._rss_delta_samples_mb = []
+
+        self.p95_cpu_memory_mb = 0.0
+        self.p99_cpu_memory_mb = 0.0
+        self.p95_cpu_ram_delta_mb = 0.0
+        self.p99_cpu_ram_delta_mb = 0.0
+        self.total_prompt_tokens     = 0
+        self.total_completion_tokens = 0
 
     # ------------------------------------------------------------------
     # Lifecycle
@@ -69,8 +101,35 @@ class PerfMetrics:
         """Call immediately before the inference loop begins."""
         tracemalloc.start()
         if _HAS_PSUTIL:
-            self._rss_at_start = psutil.Process(os.getpid()).memory_info().rss
+            proc = psutil.Process(os.getpid())
+            self._rss_at_start = proc.memory_info().rss
+            cpu_times = proc.cpu_times()
+            self._cpu_time_start = cpu_times.user + cpu_times.system
         self._t_start = time.perf_counter()
+
+    def sample_memory(self):
+        """
+        Sample current process RSS memory.
+
+        rss_mb:
+            Absolute process memory, including Python, llama.cpp, and loaded model.
+
+        delta_mb:
+            Extra memory compared with the start of inference.
+            Since perf.start() is called after model loading in your code,
+            this mostly represents inference-time memory growth.
+        """
+        if not _HAS_PSUTIL:
+            return
+
+        proc = psutil.Process(os.getpid())
+        rss_mb = proc.memory_info().rss / 1024 / 1024
+        start_mb = self._rss_at_start / 1024 / 1024
+        delta_mb = max(0.0, rss_mb - start_mb)
+
+        self._rss_samples_mb.append(rss_mb)
+        self._rss_delta_samples_mb.append(delta_mb)
+
 
     def stop(self, n_samples: int):
         """Call immediately after the inference loop ends."""
@@ -84,6 +143,14 @@ class PerfMetrics:
 
         if _HAS_PSUTIL:
             proc        = psutil.Process(os.getpid())
+            cpu_times = proc.cpu_times()
+            cpu_time_end = cpu_times.user + cpu_times.system
+            self.cpu_time_used_seconds = max(0.0, cpu_time_end - self._cpu_time_start)
+
+            wall_time = self.time_taken_seconds
+            self.avg_cpu_cores_used = (
+                self.cpu_time_used_seconds / wall_time if wall_time > 0 else 0.0
+            )
             rss_end_mb  = proc.memory_info().rss / 1024 / 1024
             rss_start_mb = self._rss_at_start / 1024 / 1024
             # delta = RAM consumed specifically by the inference loop
@@ -93,6 +160,19 @@ class PerfMetrics:
         else:
             self.cpu_ram_used_mb    = peak_traced_mb
             self.peak_cpu_memory_mb = peak_traced_mb
+
+        if self._rss_samples_mb:
+            self.p95_cpu_memory_mb = percentile(self._rss_samples_mb, 95)
+            self.p99_cpu_memory_mb = percentile(self._rss_samples_mb, 99)
+
+        if self._rss_delta_samples_mb:
+            self.p95_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 95)
+            self.p99_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 99)
+
+     # Call this once per inference result
+    def record_tokens(self, usage: dict):
+        self.total_prompt_tokens     += usage.get("prompt_tokens", 0)
+        self.total_completion_tokens += usage.get("completion_tokens", 0)
 
     # ------------------------------------------------------------------
     # Derived metrics
@@ -115,6 +195,18 @@ class PerfMetrics:
             return 0.0
         return self._n_samples / self.time_taken_seconds
 
+    @property
+    def total_tokens(self) -> int:
+        return self.total_prompt_tokens + self.total_completion_tokens
+
+    @property
+    def avg_prompt_tokens(self) -> float:
+        return self.total_prompt_tokens / self._n_samples if self._n_samples else 0.0
+
+    @property
+    def avg_completion_tokens(self) -> float:
+        return self.total_completion_tokens / self._n_samples if self._n_samples else 0.0
+
     # ------------------------------------------------------------------
     # Output helpers
     # ------------------------------------------------------------------
@@ -126,6 +218,18 @@ class PerfMetrics:
             "throughput_logs_per_second": round(self.throughput_logs_per_second, 2),
             "cpu_ram_used_mb"           : round(self.cpu_ram_used_mb, 2),
             "peak_cpu_memory_mb"        : round(self.peak_cpu_memory_mb, 2),
+            "cpu_cores_available"      : self.cpu_cores_available,
+            "cpu_time_used_seconds"    : round(self.cpu_time_used_seconds, 3),
+            "avg_cpu_cores_used"       : round(self.avg_cpu_cores_used, 2),
+            "total_prompt_tokens"       : self.total_prompt_tokens,
+            "total_completion_tokens"   : self.total_completion_tokens,
+            "total_tokens"              : self.total_tokens,
+            "avg_prompt_tokens"         : round(self.avg_prompt_tokens, 1),
+            "avg_completion_tokens"     : round(self.avg_completion_tokens, 1),
+            "p95_cpu_memory_mb"       : round(self.p95_cpu_memory_mb, 2),
+            "p99_cpu_memory_mb"       : round(self.p99_cpu_memory_mb, 2),
+            "p95_cpu_ram_delta_mb"    : round(self.p95_cpu_ram_delta_mb, 2),
+            "p99_cpu_ram_delta_mb"    : round(self.p99_cpu_ram_delta_mb, 2),
         }
 
     def print_summary(self):
@@ -142,6 +246,29 @@ class PerfMetrics:
               + ("" if _HAS_PSUTIL else "  (install psutil: pip install psutil)"))
         print(f"  Peak CPU RAM           : {d['peak_cpu_memory_mb']:.1f} MB"
               + ("" if _HAS_PSUTIL else ""))
+        print(f"  CPU cores available    : {d['cpu_cores_available']}")
+        print(f"  CPU time used          : {d['cpu_time_used_seconds']:.3f} s")
+        print(f"  Avg CPU cores used     : {d['avg_cpu_cores_used']:.2f}")
+        print(f"  P95 CPU memory         : {d['p95_cpu_memory_mb']:.1f} MB")
+        print(f"  P99 CPU memory         : {d['p99_cpu_memory_mb']:.1f} MB")
+        print(f"  P95 RAM delta          : {d['p95_cpu_ram_delta_mb']:.1f} MB")
+        print(f"  P99 RAM delta          : {d['p99_cpu_ram_delta_mb']:.1f} MB")
+        # Token usage details
+        print("=" * 55)
+        print("  TOKEN USAGE")
+        print("=" * 55)
+        print(f"  {'Prompt tokens':<25} {self.total_prompt_tokens:>10,}")
+        print(f"  {'Completion tokens':<25} {self.total_completion_tokens:>10,}")
+        print(f"  {'Total tokens':<25} {self.total_tokens:>10,}")
+        print("-" * 55)
+        print(f"  {'Avg prompt / log':<25} {self.avg_prompt_tokens:>9.1f}")
+        print(f"  {'Avg completion / log':<25} {self.avg_completion_tokens:>9.1f}")
+        print(f"  {'Avg total / log':<25} {self.avg_prompt_tokens + self.avg_completion_tokens:>9.1f}")
+        print("-" * 55)
+        pct_prompt     = 100 * self.total_prompt_tokens     / max(1, self.total_tokens)
+        pct_completion = 100 * self.total_completion_tokens / max(1, self.total_tokens)
+        print(f"  {'Prompt share':<25} {pct_prompt:>9.1f} %")
+        print(f"  {'Completion share':<25} {pct_completion:>9.1f} %")
         print("=" * 55)
 
 
@@ -386,6 +513,9 @@ def run_eval(args):
         n_gpu_layers = args.gpu_layers,
         n_ctx        = args.ctx_size,
         n_threads    = args.threads,
+        n_threads_batch = args.threads,
+        n_batch         = args.n_batch,
+        use_mmap        = True,
         verbose      = False,
     )
 
@@ -435,6 +565,7 @@ def run_eval(args):
 
         y_pred.append(pred)
         raw_outputs.append(raw)
+        perf.sample_memory()
 
         # Debug output
         if debug_left > 0:
@@ -512,11 +643,12 @@ def _build_parser():
     )
     p.add_argument("--gguf",        required=True)
     p.add_argument("--test",        required=True)
-    p.add_argument("--gpu_layers",  type=int, default=999)
+    p.add_argument("--gpu_layers",  type=int, default=0)
     p.add_argument("--threads",     type=int, default=4)
     p.add_argument("--ctx_size",    type=int, default=1024)
-    p.add_argument("--max_tokens",  type=int, default=512)
+    p.add_argument("--max_tokens",  type=int, default=50)
     p.add_argument("--limit",       type=int, default=0)
+    p.add_argument("--n_batch", type=int, default=512)
     p.add_argument("--output",      default="",
                    help="JSONL output file. First line = metadata/metrics, "
                         "remaining lines = per-sample predictions.")
