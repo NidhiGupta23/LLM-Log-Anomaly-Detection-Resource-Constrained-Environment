@@ -1,4 +1,4 @@
-{"_meta": true, "infer_mode": "full", "model_used": "bgl_1.5b.f16.gguf", "time_taken_seconds": 148.871, "avg_time_per_log_ms": 297.741, "throughput_logs_per_second": 3.36, "cpu_ram_used_mb": 144.64, "peak_cpu_memory_mb": 1190.5, "cpu_cores_available": 8, "cpu_time_used_seconds": 1190.59, "avg_cpu_cores_used": 8.0, "total_prompt_tokens": 131495, "total_completion_tokens": 1000, "total_tokens": 132495, "avg_prompt_tokens": 263.0, "avg_completion_tokens": 2.0, "p95_cpu_memory_mb": 1185.36, "p99_cpu_memory_mb": 1185.36, "p95_cpu_ram_delta_mb": 139.51, "p99_cpu_ram_delta_mb": 139.51}
+{"_meta": true, "model_used": "bgl_1.5b_Q4_K_M.gguf", "time_taken_seconds": 60.993, "avg_time_per_log_ms": 121.987, "throughput_logs_per_second": 8.2, "cpu_ram_used_mb": 133.96, "peak_cpu_memory_mb": 638.86, "cpu_cores_available": 8, "cpu_time_used_seconds": 243.94, "avg_cpu_cores_used": 4.0, "total_prompt_tokens": 0, "total_completion_tokens": 0, "total_tokens": 0, "avg_prompt_tokens": 0.0, "avg_completion_tokens": 0.0, "p95_cpu_memory_mb": 635.5, "p99_cpu_memory_mb": 635.5, "p95_cpu_ram_delta_mb": 130.61, "p99_cpu_ram_delta_mb": 130.61}
 {"label": "0", "line": "1121599700 2005.07.17 R01-M0-N4-C:J09-U11 2005-07-17-04.28.20.307654 R01-M0-N4-C:J09-U11 RAS KERNEL INFO \"generating core.43238\""}
 {"label": "0", "line": "1121705162 2005.07.18 R14-M0-ND-C:J02-U01 2005-07-18-09.46.02.565045 R14-M0-ND-C:J02-U01 RAS KERNEL INFO \"CE sym 30, at 0x1175ff60, mask 0x08\""}
 {"label": "0", "line": "1121706981 2005.07.18 R31-M0-NB-C:J15-U01 2005-07-18-10.16.21.950980 R31-M0-NB-C:J15-U01 RAS KERNEL INFO \"generating core.6688\""}
@@ -129,7 +129,7 @@
 {"label": "0", "line": "1123609128 2005.08.09 R42-M1-N9 2005-08-09-10.38.48.800621 R42-M1-N9 NULL DISCOVERY SEVERE \"Can not get assembly information for node card\""}
 {"label": "0", "line": "1123609220 2005.08.09 R31-M1-N4 2005-08-09-10.40.20.358658 R31-M1-N4 NULL DISCOVERY INFO \"Node card VPD check: U01 node in processor card slot J15 do not match. VPD ecid 04E28088402FFFFF0F0C1AB19ECF, found 04D78137922FFFFF09091BC04EE4\""}
 {"label": "0", "line": "1123611405 2005.08.09 R77-M1-N7 2005-08-09-11.16.45.101212 R77-M1-N7 NULL DISCOVERY WARNING \"Node card is not fully functional\""}
-{"label": "1", "line": "1123614592 2005.08.09 R00-M0-N8-C:J14-U11 2005-08-09-12.09.52.557935 R00-M0-N8-C:J14-U11 RAS KERNEL FATAL \"rts panic! - stopping execution\""}
+{"label": "0", "line": "1123614592 2005.08.09 R00-M0-N8-C:J14-U11 2005-08-09-12.09.52.557935 R00-M0-N8-C:J14-U11 RAS KERNEL FATAL \"rts panic! - stopping execution\""}
 {"label": "0", "line": "1123654527 2005.08.09 R25-M0-NA-C:J14-U11 2005-08-09-23.15.27.490064 R25-M0-NA-C:J14-U11 RAS KERNEL INFO \"total of 2 ddr error(s) detected and corrected\""}
 {"label": "0", "line": "1123730866 2005.08.10 R74-M0-N1-C:J05-U01 2005-08-10-20.27.46.586985 R74-M0-N1-C:J05-U01 RAS KERNEL INFO \"CE sym 30, at 0x042358a0, mask 0x20\""}
 {"label": "0", "line": "1123759571 2005.08.11 R17-M0-N9-C:J17-U01 2005-08-11-04.26.11.230460 R17-M0-N9-C:J17-U01 RAS KERNEL INFO \"CE sym 35, at 0x190faee0, mask 0x04\""}
@@ -206,7 +206,7 @@
 {"label": "1", "line": "1125781754 2005.09.03 R11-M1-N8-I:J18-U01 2005-09-03-14.09.14.865857 R11-M1-N8-I:J18-U01 RAS KERNEL FATAL \"Lustre mount FAILED : bglio158 : point /p/gb1\""}
 {"label": "1", "line": "1125781779 2005.09.03 R10-M1-NC-I:J18-U11 2005-09-03-14.09.39.777795 R10-M1-NC-I:J18-U11 RAS KERNEL FATAL \"Lustre mount FAILED : bglio143 : point /p/gb1\""}
 {"label": "0", "line": "1125817578 2005.09.04 R72-M1-N1-C:J08-U11 2005-09-04-00.06.18.680127 R72-M1-N1-C:J08-U11 RAS KERNEL INFO \"CE sym 25, at 0x104c5d00, mask 0x02\""}
-{"label": "1", "line": "1125879704 2005.09.04 R63-M1-N1-C:J14-U01 2005-09-04-17.21.44.109967 R63-M1-N1-C:J14-U01 RAS KERNEL FATAL \"rts panic! - stopping execution\""}
+{"label": "0", "line": "1125879704 2005.09.04 R63-M1-N1-C:J14-U01 2005-09-04-17.21.44.109967 R63-M1-N1-C:J14-U01 RAS KERNEL FATAL \"rts panic! - stopping execution\""}
 {"label": "0", "line": "1125948143 2005.09.05 R74-M1-N8-C:J07-U01 2005-09-05-12.22.23.307387 R74-M1-N8-C:J07-U01 RAS KERNEL INFO \"1 ddr errors(s) detected and corrected on rank 0, symbol 1, bit 4\""}
 {"label": "1", "line": "1126053116 2005.09.06 R55-M0-N8-I:J18-U01 2005-09-06-17.31.56.391189 R55-M0-N8-I:J18-U01 RAS KERNEL FATAL \"Lustre mount FAILED : bglio730 : point /p/gb1\""}
 {"label": "0", "line": "1126211908 2005.09.08 R62-M1-NC-I:J18-U11 2005-09-08-13.38.28.010251 R62-M1-NC-I:J18-U11 RAS KERNEL INFO \"ciod: In packet from node 19.0 (R62-M1-Nf-C:J05-U01), message code 2 is not 3 or 4294967295 (softheader=00130013 00030000 00000001 00000000)\""}
@@ -375,7 +375,7 @@
 {"label": "0", "line": "1131582333 2005.11.09 R63-M0-N6-C:J03-U01 2005-11-09-16.25.33.294313 R63-M0-N6-C:J03-U01 RAS KERNEL INFO \"iar 00106494 dear 0246daec\""}
 {"label": "0", "line": "1131583850 2005.11.09 R63-M0-NE-C:J08-U11 2005-11-09-16.50.50.742258 R63-M0-NE-C:J08-U11 RAS KERNEL INFO \"iar 00106278 dear 02f5677c\""}
 {"label": "0", "line": "1131590821 2005.11.09 R63-M0-N8-C:J06-U01 2005-11-09-18.47.01.051154 R63-M0-N8-C:J06-U01 RAS KERNEL INFO \"iar 00113898 dear 0fee9d3c\""}
-{"label": "1", "line": "1131680350 2005.11.10 R63-M0-ND-C:J08-U01 2005-11-10-19.39.10.320337 R63-M0-ND-C:J08-U01 RAS KERNEL FATAL \"Error receiving packet on tree network, expecting type 57 instead of type 3 (softheader=00f607bb 39b40003 00000002 00000000) PSR0=00001f01 PSR1=00000000 PRXF=00000002 PIXF=00000007\""}
+{"label": "0", "line": "1131680350 2005.11.10 R63-M0-ND-C:J08-U01 2005-11-10-19.39.10.320337 R63-M0-ND-C:J08-U01 RAS KERNEL FATAL \"Error receiving packet on tree network, expecting type 57 instead of type 3 (softheader=00f607bb 39b40003 00000002 00000000) PSR0=00001f01 PSR1=00000000 PRXF=00000002 PIXF=00000007\""}
 {"label": "0", "line": "1131691044 2005.11.10 R51-M1-N2-C:J12-U01 2005-11-10-22.37.24.284215 R51-M1-N2-C:J12-U01 RAS KERNEL INFO \"CE sym 5, at 0x0115e800, mask 0x40\""}
 {"label": "0", "line": "1131692615 2005.11.10 R63-M0-N5-C:J06-U11 2005-11-10-23.03.35.070354 R63-M0-N5-C:J06-U11 RAS KERNEL INFO \"iar 00106448 dear 0246da6c\""}
 {"label": "0", "line": "1131692634 2005.11.10 R63-M0-N1-C:J13-U11 2005-11-10-23.03.54.415235 R63-M0-N1-C:J13-U11 RAS KERNEL INFO \"iar 00106448 dear 0246db2c\""}
