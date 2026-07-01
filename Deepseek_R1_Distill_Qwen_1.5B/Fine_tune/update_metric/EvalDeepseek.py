@@ -679,6 +679,9 @@ def run_eval(args):
         n_gpu_layers = args.gpu_layers,
         n_ctx        = args.ctx_size,
         n_threads    = args.threads,
+        n_threads_batch = args.threads,
+        n_batch         = args.n_batch,
+        use_mmap        = True,
         verbose      = False,
     )
 
@@ -718,7 +721,7 @@ def run_eval(args):
                 max_tokens  = args.max_tokens,
                 temperature = 0.0,
                 echo        = False,
-                stop        = ["<|endoftext|>", "</s>"],
+                stop        = ["\n", "<|endoftext|>", "</s>"],
             )
             raw  = out["choices"][0]["text"]
             pred = extract_prediction(raw)
@@ -814,16 +817,17 @@ def _build_parser():
                        "  minimal   : node + component + level + content\n"
                        "  4column   : type + component + level + content\n"
                    ))
-    p.add_argument("--gpu_layers", type=int, default=999)
-    p.add_argument("--threads",    type=int, default=4)
+    p.add_argument("--gpu_layers", type=int, default=0)
+    p.add_argument("--threads",    type=int, default=os.cpu_count() or 4)
     p.add_argument("--ctx_size",   type=int, default=1024)
-    p.add_argument("--max_tokens", type=int, default=512)
+    p.add_argument("--max_tokens", type=int, default=50)
     p.add_argument("--limit",      type=int, default=0,
                    help="Max number of lines to process (0 = all).")
     p.add_argument("--output",     default="",
                    help="JSONL output file. First line = metadata/metrics, "
                         "remaining lines = per-sample predictions.")
     p.add_argument("--show_errors", type=int, default=10)
+    p.add_argument("--n_batch", type=int, default=512)
     p.add_argument("--debug",       type=int, default=0,
                    help="Print raw model output for the first N samples.")
     return p

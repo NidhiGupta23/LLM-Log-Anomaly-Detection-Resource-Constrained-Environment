@@ -8,24 +8,10 @@ Supports two input formats automatically:
   A) Labelled   : label + 9 fields  (standard BGL / your train-val-test splits)
   B) Unlabelled : 9 fields, no leading label column
 
-──────────────────────────────────────────────────────────────
-THREE INFERENCE MODES  (select with --mode)
-──────────────────────────────────────────────────────────────
-  full      Send the complete raw log line to the LLM.
-            e.g. "- 1117838570 2005.06.03 R02-M1-N0-C:J12-U11 ... message"
-
-  extended  Send node + type + component + level + content.
-            e.g. "[R02-M1-N0] type=RAS  comp=KERNEL  level=FATAL  <message>"
-
-  minimal   Send node + component + level + content only.
-            e.g. "[R02-M1-N0] comp=KERNEL  level=FATAL  <message>"
-──────────────────────────────────────────────────────────────
-
 Usage:
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test ../bgl_splits/test.log --mode full
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode extended
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode minimal
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode minimal --debug 5
+  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test ../bgl_splits/test.log
+  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test Test_500_no_label_sorted.log
+  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test ../bgl_splits/test.log --debug 5
 """
 
 import argparse
@@ -46,41 +32,6 @@ except ImportError:
     _HAS_PSUTIL = False
 
 
-# ===========================================================================
-# INFERENCE MODES
-# ===========================================================================
-
-MODES = ("full", "extended", "minimal", "4column")
-
-"""
-BGL column layout
-─────────────────────────────────────────────────────────────────
-Labelled  (10 fields, split on first 9 whitespace boundaries):
-  idx  0  label        ('-' = normal, anything else = abnormal)
-  idx  1  timestamp    (Unix epoch)
-  idx  2  date
-  idx  3  time
-  idx  4  node         e.g. R02-M1-N0-C:J12-U11
-  idx  5  type         e.g. RAS / KERNEL / APP …
-  idx  6  location     e.g. R02-M1-N0
-  idx  7  component    e.g. MMCS / KERNEL / …
-  idx  8  level        e.g. INFO / WARN / FATAL / ERROR …
-  idx  9  content      (remainder of line)
-
-Unlabelled (9 fields, no leading label):
-  idx  0  timestamp
-  idx  1  date
-  idx  2  time
-  idx  3  node
-  idx  4  type
-  idx  5  location
-  idx  6  component
-  idx  7  level
-  idx  8  content
-"""
-
-_N_LABELLED   = 10   # number of split fields for labelled lines
-_N_UNLABELLED = 9    # number of split fields for unlabelled lines
 
 def percentile(values: list, q: float) -> float:
     """
@@ -100,6 +51,8 @@ def percentile(values: list, q: float) -> float:
 
     return values[f] + (values[c] - values[f]) * (k - f)
 
+
+
 # ===========================================================================
 # METRICS COLLECTION
 # ===========================================================================
@@ -113,7 +66,8 @@ class PerfMetrics:
     time_taken_seconds      : wall-clock seconds for the full inference loop
     avg_time_per_log_ms     : mean milliseconds spent per log line
     throughput_logs_per_sec : log lines processed per second
-    cpu_ram_used_mb         : RSS memory delta (end - start) in MB
+    cpu_ram_used_mb         : RSS memory delta (end - start) in MB — RAM consumed
+                              by the inference loop itself, measured via psutil
     peak_cpu_memory_mb      : peak RSS (resident set size) in MB during the run
     model_used              : basename of the GGUF file
     """
@@ -123,8 +77,8 @@ class PerfMetrics:
         self._t_start            = None
         self._t_end              = None
         self._n_samples          = 0
-        self.cpu_ram_used_mb     = 0.0
-        self.peak_cpu_memory_mb  = 0.0
+        self.cpu_ram_used_mb     = 0.0   # RSS delta over the inference loop
+        self.peak_cpu_memory_mb  = 0.0   # peak RSS seen during the run
         self._rss_at_start       = 0.0
         self.cpu_cores_available = os.cpu_count() or 0
         self.cpu_time_used_seconds = 0.0
@@ -140,14 +94,13 @@ class PerfMetrics:
         self.total_prompt_tokens     = 0
         self.total_completion_tokens = 0
 
-
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
     def start(self):
+        """Call immediately before the inference loop begins."""
         tracemalloc.start()
         if _HAS_PSUTIL:
-            #self._rss_at_start = psutil.Process(os.getpid()).memory_info().rss
             proc = psutil.Process(os.getpid())
             self._rss_at_start = proc.memory_info().rss
             cpu_times = proc.cpu_times()
@@ -178,17 +131,18 @@ class PerfMetrics:
         self._rss_delta_samples_mb.append(delta_mb)
 
 
-
     def stop(self, n_samples: int):
+        """Call immediately after the inference loop ends."""
         self._t_end     = time.perf_counter()
         self._n_samples = n_samples
 
+        # --- CPU RAM: peak and delta ---
         _, peak_traced = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         peak_traced_mb = peak_traced / 1024 / 1024
 
         if _HAS_PSUTIL:
-            proc         = psutil.Process(os.getpid())
+            proc        = psutil.Process(os.getpid())
             cpu_times = proc.cpu_times()
             cpu_time_end = cpu_times.user + cpu_times.system
             self.cpu_time_used_seconds = max(0.0, cpu_time_end - self._cpu_time_start)
@@ -197,9 +151,11 @@ class PerfMetrics:
             self.avg_cpu_cores_used = (
                 self.cpu_time_used_seconds / wall_time if wall_time > 0 else 0.0
             )
-            rss_end_mb   = proc.memory_info().rss / 1024 / 1024
+            rss_end_mb  = proc.memory_info().rss / 1024 / 1024
             rss_start_mb = self._rss_at_start / 1024 / 1024
+            # delta = RAM consumed specifically by the inference loop
             self.cpu_ram_used_mb    = max(0.0, rss_end_mb - rss_start_mb)
+            # peak = total process RSS at its highest point
             self.peak_cpu_memory_mb = max(peak_traced_mb, rss_end_mb)
         else:
             self.cpu_ram_used_mb    = peak_traced_mb
@@ -213,7 +169,7 @@ class PerfMetrics:
             self.p95_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 95)
             self.p99_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 99)
 
-    # Call this once per inference result
+     # Call this once per inference result
     def record_tokens(self, usage: dict):
         self.total_prompt_tokens     += usage.get("prompt_tokens", 0)
         self.total_completion_tokens += usage.get("completion_tokens", 0)
@@ -250,8 +206,6 @@ class PerfMetrics:
     @property
     def avg_completion_tokens(self) -> float:
         return self.total_completion_tokens / self._n_samples if self._n_samples else 0.0
-
-
 
     # ------------------------------------------------------------------
     # Output helpers
@@ -290,7 +244,8 @@ class PerfMetrics:
         print(f"  Throughput             : {d['throughput_logs_per_second']:.2f} logs/s")
         print(f"  CPU RAM consumed       : {d['cpu_ram_used_mb']:.1f} MB"
               + ("" if _HAS_PSUTIL else "  (install psutil: pip install psutil)"))
-        print(f"  Peak CPU RAM           : {d['peak_cpu_memory_mb']:.1f} MB")
+        print(f"  Peak CPU RAM           : {d['peak_cpu_memory_mb']:.1f} MB"
+              + ("" if _HAS_PSUTIL else ""))
         print(f"  CPU cores available    : {d['cpu_cores_available']}")
         print(f"  CPU time used          : {d['cpu_time_used_seconds']:.3f} s")
         print(f"  Avg CPU cores used     : {d['avg_cpu_cores_used']:.2f}")
@@ -317,9 +272,31 @@ class PerfMetrics:
         print("=" * 55)
 
 
+
+
 # ===========================================================================
-# PARSING
+# PROMPT / PARSING
 # ===========================================================================
+
+_RULES = """\
+Classify this BGL supercomputer log line as 0 (normal) or 1 (abnormal).
+
+0 NORMAL  : informational messages, corrected hardware errors, DDR/CE errors
+            corrected, cache parity corrected, retries, recovery messages,
+            core file generation, alignment exceptions, routine warnings,
+            register dumps, diagnostic messages.
+1 ABNORMAL: kernel terminated, RTS panic, Lustre/NFS mount FAILED, link
+            severed, connection reset or timeout, fatal machine-check
+            interrupt, fatal hardware errors, errors that halt execution.
+
+Rules:
+- Judge on content, not severity label alone.
+- Some FATAL log lines are normal recovery/diagnostic events.
+- Reply with ONLY the single digit 0 or 1. Nothing else."""
+
+_N_LABELLED   = 10
+_N_UNLABELLED = 9
+
 
 def _is_unix_timestamp(token: str) -> bool:
     try:
@@ -339,139 +316,27 @@ def detect_format(path: str) -> str:
 
 
 def parse_labelled_line(raw: str) -> dict:
-    """
-    Split a labelled BGL line into its 10 logical columns.
-
-    Returns a dict with keys:
-      label_tag, node, type, component, level, content
-    Falls back gracefully for short lines.
-    """
     parts = raw.strip().split(None, _N_LABELLED - 1)
     if len(parts) < _N_LABELLED:
-        return {
-            "label_tag": "-",
-            "node": "UNKNOWN", "type": "UNKNOWN",
-            "component": "UNKNOWN", "level": "UNKNOWN",
-            "content": raw.strip(),
-        }
-    return {
-        "label_tag": parts[0],
-        "node"     : parts[4],   # e.g. R02-M1-N0-C:J12-U11
-        "type"     : parts[5],   # e.g. RAS
-        "component": parts[7],   # e.g. KERNEL
-        "level"    : parts[8],   # e.g. FATAL
-        "content"  : parts[9],   # remainder of line
-    }
+        return {"label_tag": "-", "component": "UNKNOWN", "content": raw.strip()}
+    return {"label_tag": parts[0], "component": parts[7], "content": parts[9]}
 
 
 def parse_unlabelled_line(raw: str) -> dict:
-    """
-    Split an unlabelled BGL line (no leading label column).
-
-    Returns a dict with keys:
-      node, type, component, level, content
-    Falls back gracefully for short lines.
-    """
     parts = raw.strip().split(None, _N_UNLABELLED - 1)
     if len(parts) < _N_UNLABELLED:
-        return {
-            "node": "UNKNOWN", "type": "UNKNOWN",
-            "component": "UNKNOWN", "level": "UNKNOWN",
-            "content": raw.strip(),
-        }
-    return {
-        "node"     : parts[4],   # e.g. R02-M1-N0-C:J12-U11
-        "type"     : parts[5],   # e.g. RAS
-        "component": parts[6],   # e.g. KERNEL
-        "level"    : parts[7],   # e.g. FATAL
-        "content"  : parts[8],   # remainder of line
-    }
+        return {"component": "UNKNOWN", "content": raw.strip()}
+    return {"component": parts[6], "content": parts[8]}
 
 
-# ===========================================================================
-# PROMPT BUILDING  (one function per mode + dispatcher)
-# ===========================================================================
-
-_RULES_TEMPLATE = """\
-Classify this BGL supercomputer log line as 0 (normal) or 1 (abnormal).
-
-0 NORMAL  : informational messages, corrected hardware errors, DDR/CE errors
-            corrected, cache parity corrected, retries, recovery messages,
-            core file generation, alignment exceptions, routine warnings,
-            register dumps, diagnostic messages.
-1 ABNORMAL: kernel terminated, RTS panic, Lustre/NFS mount FAILED, link
-            severed, connection reset or timeout, fatal machine-check
-            interrupt, fatal hardware errors, errors that halt execution.
-
-Rules:
-- Judge on content, not severity label alone.
-- Some FATAL log lines are normal recovery/diagnostic events.
-- Reply with ONLY the single digit 0 or 1. Nothing else.
-
-Log: {log_repr}
-Label:"""
+def format_for_prompt(parsed: dict) -> str:
+    return f"[{parsed['component']}] {parsed['content']}"
 
 
-# ── Mode helpers ─────────────────────────────────────────────────────────────
-
-def _repr_full(raw: str, _parsed: dict) -> str:
-    """Mode 'full': send the entire raw log line verbatim."""
-    return raw.strip()
-
-
-def _repr_extended(raw: str, parsed: dict) -> str:
-    """Mode 'extended': node  type  component  level  content."""
-    return (
-        f"[{parsed['node']}]  "
-        f"type={parsed['type']}  "
-        f"comp={parsed['component']}  "
-        f"level={parsed['level']}  "
-        f"{parsed['content']}"
-    )
-
-
-def _repr_minimal(raw: str, parsed: dict) -> str:
-    """Mode 'minimal': node  component  level  content."""
-    return (
-        f"[{parsed['node']}]  "
-        f"comp={parsed['component']}  "
-        f"level={parsed['level']}  "
-        f"{parsed['content']}"
-    )
-
-def _repr_4column(raw: str, parsed: dict) -> str:
-    """Mode '5column': type  component  level  content."""
-    return (
-        f"comp={parsed['component']}  "
-        f"{parsed['content']}"
-    )
-
-_MODE_REPR = {
-    "full"    : _repr_full,
-    "extended": _repr_extended,
-    "minimal" : _repr_minimal,
-    "4column" : _repr_4column,
-}
-
-
-def build_prompt(raw_line: str, unlabelled: bool, mode: str) -> str:
-    """
-    Build the full prompt string for one log line.
-
-    Parameters
-    ----------
-    raw_line   : original text of the log line
-    unlabelled : True when the file has no leading label column
-    mode       : one of 'full', 'extended', 'minimal', '4column'
-    """
-    if mode not in _MODE_REPR:
-        raise ValueError(f"Unknown mode '{mode}'. Choose from: {MODES}")
-
-    parsed = (parse_unlabelled_line(raw_line) if unlabelled
-              else parse_labelled_line(raw_line))
-
-    log_repr = _MODE_REPR[mode](raw_line, parsed)
-    return _RULES_TEMPLATE.format(log_repr=log_repr)
+def build_prompt(raw_line: str, unlabelled: bool) -> str:
+    parsed = parse_unlabelled_line(raw_line) if unlabelled \
+             else parse_labelled_line(raw_line)
+    return f"{_RULES}\n\nLog: {format_for_prompt(parsed)}\nLabel:"
 
 
 # ===========================================================================
@@ -552,7 +417,7 @@ def load_data(path: str, limit: int) -> tuple:
 
 
 # ===========================================================================
-# CLASSIFICATION METRICS
+# METRICS (classification)
 # ===========================================================================
 
 def compute_metrics(y_true: list, y_pred: list) -> dict:
@@ -610,28 +475,6 @@ def print_predict_summary(y_pred: list):
 
 
 # ===========================================================================
-# INFERENCE MODE DESCRIPTION
-# ===========================================================================
-
-_MODE_DESC = {
-    "full"    : "complete raw log line",
-    "extended": "node + type + component + level + content",
-    "minimal" : "node + component + level + content",
-    "4column" : "type + component + level + content",
-}
-
-
-def _show_mode_example(raw_line: str, unlabelled: bool, mode: str):
-    """Print a sample prompt snippet so the user can verify the chosen mode."""
-    prompt = build_prompt(raw_line, unlabelled, mode)
-    # Show only the 'Log:' line for brevity
-    for line in prompt.splitlines():
-        if line.startswith("Log:"):
-            print(f"  Example prompt input : {line}")
-            return
-
-
-# ===========================================================================
 # MAIN
 # ===========================================================================
 
@@ -645,30 +488,21 @@ def run_eval(args):
         if not os.path.exists(p):
             sys.exit(f"[ERROR] File not found: {p}")
 
-    if args.mode not in MODES:
-        sys.exit(f"[ERROR] --mode must be one of: {', '.join(MODES)}")
-
     records, unlabelled = load_data(args.test, args.limit)
-    eval_mode  = "PREDICT (unlabelled)" if unlabelled else "EVALUATE (labelled)"
+    mode  = "PREDICT (unlabelled)" if unlabelled else "EVALUATE (labelled)"
     n0_gt = sum(1 for r in records if r["label"] == "0") if not unlabelled else 0
     n1_gt = sum(1 for r in records if r["label"] == "1") if not unlabelled else 0
 
     print("=" * 55)
-    print(f"  BGL ANOMALY CLASSIFIER — {eval_mode}")
+    print(f"  BGL ANOMALY CLASSIFIER — {mode}")
     print("=" * 55)
     print(f"  GGUF        : {args.gguf}")
     print(f"  Input       : {args.test}")
     print(f"  Format      : {'unlabelled' if unlabelled else f'labelled  (normal:{n0_gt}  abnormal:{n1_gt})'}")
     print(f"  Samples     : {len(records)}")
-    print(f"  Infer mode  : {args.mode}  ({_MODE_DESC[args.mode]})")
     print(f"  Max tokens  : {args.max_tokens}")
     print(f"  GPU layers  : {args.gpu_layers}")
     print()
-
-    # Show a sample of how the first line will be formatted for the LLM
-    if records:
-        _show_mode_example(records[0]["raw_line"], unlabelled, args.mode)
-        print()
 
     # -----------------------------------------------------------------------
     # Load model
@@ -679,13 +513,16 @@ def run_eval(args):
         n_gpu_layers = args.gpu_layers,
         n_ctx        = args.ctx_size,
         n_threads    = args.threads,
+        n_threads_batch = args.threads,
+        n_batch         = args.n_batch,
+        use_mmap        = True,
         verbose      = False,
     )
 
     # -----------------------------------------------------------------------
-    # Inference loop
+    # Inference loop — wrapped by PerfMetrics
     # -----------------------------------------------------------------------
-    perf        = PerfMetrics(gguf_path=args.gguf)
+    perf = PerfMetrics(gguf_path=args.gguf)
     y_pred      = []
     raw_outputs = []
     errors      = []
@@ -693,7 +530,7 @@ def run_eval(args):
     debug_left  = args.debug
 
     print("Running inference ...\n", flush=True)
-    perf.start()
+    perf.start()   # ← starts wall clock + tracemalloc
 
     for i, rec in enumerate(records):
         # Progress report
@@ -710,7 +547,7 @@ def run_eval(args):
                 print(f"  [{i:>5}/{len(records)}] {pct:.1f}%  "
                       f"abnormal: {y_pred.count('1')}  ETA {eta:.0f}s", flush=True)
 
-        prompt = build_prompt(rec["raw_line"], unlabelled, args.mode)
+        prompt = build_prompt(rec["raw_line"], unlabelled)
 
         try:
             out  = llm(
@@ -722,7 +559,6 @@ def run_eval(args):
             )
             raw  = out["choices"][0]["text"]
             pred = extract_prediction(raw)
-            perf.record_tokens(out.get("usage", {}))
         except Exception as exc:
             raw, pred = "", "?"
             errors.append((i, str(exc)))
@@ -730,15 +566,15 @@ def run_eval(args):
         y_pred.append(pred)
         raw_outputs.append(raw)
         perf.sample_memory()
+
         # Debug output
         if debug_left > 0:
             true_lbl = rec["label"] if not unlabelled else "N/A"
             print(f"\n  [DEBUG {i}] true={true_lbl}  pred={pred}")
-            print(f"  prompt  : {repr(prompt[-200:])}")
-            print(f"  raw out : {repr(raw[:300])}\n")
+            print(f"  raw: {repr(raw[:300])}\n")
             debug_left -= 1
 
-    perf.stop(n_samples=len(records))
+    perf.stop(n_samples=len(records))   # ← stops clock + captures memory
 
     # -----------------------------------------------------------------------
     # Print results
@@ -760,6 +596,7 @@ def run_eval(args):
                     if args.debug:
                         print(f"    raw: {repr(raw[:200])}")
 
+    # Always print performance metrics
     perf.print_summary()
 
     # -----------------------------------------------------------------------
@@ -772,11 +609,13 @@ def run_eval(args):
                      if not unlabelled else {})
 
         with open(out_path, "w", encoding="utf-8") as fh:
-            meta = {"_meta": True, "infer_mode": args.mode, **perf_dict}
+            # First line: run metadata (performance + eval metrics)
+            meta = {"_meta": True, **perf_dict}
             if eval_dict:
                 meta.update(eval_dict)
             fh.write(json.dumps(meta) + "\n")
 
+            # Remaining lines: per-sample predictions
             for rec, pred, raw in zip(records, y_pred, raw_outputs):
                 row = {"label": pred, "line": rec["raw_line"]}
                 if not unlabelled:
@@ -802,25 +641,15 @@ def _build_parser():
         description="Evaluate or predict with a BGL GGUF anomaly classifier.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    p.add_argument("--gguf",       required=True,
-                   help="Path to the GGUF model file.")
-    p.add_argument("--test",       required=True,
-                   help="Path to the log file (.log) or labelled JSONL (.jsonl).")
-    p.add_argument("--mode",       choices=MODES, default="minimal",
-                   help=(
-                       "Inference mode — what is sent to the LLM.\n"
-                       "  full      : complete raw log line\n"
-                       "  extended  : node + type + component + level + content\n"
-                       "  minimal   : node + component + level + content\n"
-                       "  4column   : type + component + level + content\n"
-                   ))
-    p.add_argument("--gpu_layers", type=int, default=999)
-    p.add_argument("--threads",    type=int, default=4)
-    p.add_argument("--ctx_size",   type=int, default=1024)
-    p.add_argument("--max_tokens", type=int, default=512)
-    p.add_argument("--limit",      type=int, default=0,
-                   help="Max number of lines to process (0 = all).")
-    p.add_argument("--output",     default="",
+    p.add_argument("--gguf",        required=True)
+    p.add_argument("--test",        required=True)
+    p.add_argument("--gpu_layers",  type=int, default=0)
+    p.add_argument("--threads",     type=int, default=4)
+    p.add_argument("--ctx_size",    type=int, default=1024)
+    p.add_argument("--max_tokens",  type=int, default=50)
+    p.add_argument("--limit",       type=int, default=0)
+    p.add_argument("--n_batch", type=int, default=512)
+    p.add_argument("--output",      default="",
                    help="JSONL output file. First line = metadata/metrics, "
                         "remaining lines = per-sample predictions.")
     p.add_argument("--show_errors", type=int, default=10)
