@@ -9,7 +9,7 @@ Supports two input formats automatically:
   B) Unlabelled : 9 fields, no leading label column
 
 ──────────────────────────────────────────────────────────────
-FIVE INFERENCE MODES  (select with --mode)
+THREE INFERENCE MODES  (select with --mode)
 ──────────────────────────────────────────────────────────────
   full      Send the complete raw log line to the LLM.
             e.g. "- 1117838570 2005.06.03 R02-M1-N0-C:J12-U11 ... message"
@@ -19,20 +19,12 @@ FIVE INFERENCE MODES  (select with --mode)
 
   minimal   Send node + component + level + content only.
             e.g. "[R02-M1-N0] comp=KERNEL  level=FATAL  <message>"
-
-  4column   Send type + component + level + content only.
-            e.g. "type=RAS  comp=KERNEL  level=FATAL  <message>"
-
-  2column   Send level + content only.
-            e.g. "level=FATAL  <message>"
 ──────────────────────────────────────────────────────────────
 
 Usage:
   python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test ../bgl_splits/test.log --mode full
   python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode extended
   python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode minimal
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode 4column
-  python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode 2column
   python eval_bgl.py --gguf bgl_1.5b_Q8_0.gguf --test test.log             --mode minimal --debug 5
 """
 
@@ -58,24 +50,7 @@ except ImportError:
 # INFERENCE MODES
 # ===========================================================================
 
-MODES = ("full", "extended", "minimal", "4column", "2column")
-
-# User-friendly aliases for the two-column mode. The CLI accepts either
-# --mode 2column or --mode "2 column".
-_MODE_ALIASES = {
-    "2 column": "2column",
-    "2-column": "2column",
-    "2_column": "2column",
-    "two column": "2column",
-    "two-column": "2column",
-    "two_column": "2column",
-}
-
-
-def normalize_mode(mode: str) -> str:
-    """Normalize mode names and aliases to the internal mode keys."""
-    cleaned = (mode or "").strip().lower()
-    return _MODE_ALIASES.get(cleaned, cleaned)
+MODES = ("full", "extended", "minimal", "4column")
 
 """
 BGL column layout
@@ -165,20 +140,6 @@ class PerfMetrics:
         self.total_prompt_tokens     = 0
         self.total_completion_tokens = 0
 
-        # Per-sample latency and throughput measurements.
-        # response_times_ms stores the response time for each individual log.
-        # per_log_throughputs stores 1 / response_time_seconds for each log.
-        self.response_times_ms = []
-        self.per_log_throughputs = []
-        self.p50_response_time_ms = 0.0
-        self.p95_response_time_ms = 0.0
-        self.p99_response_time_ms = 0.0
-        self.p50_per_log_throughput_logs_per_second = 0.0
-        self.p95_per_log_throughput_logs_per_second = 0.0
-        self.p99_per_log_throughput_logs_per_second = 0.0
-        self.p05_per_log_throughput_logs_per_second = 0.0
-        self.p01_per_log_throughput_logs_per_second = 0.0
-
 
     # ------------------------------------------------------------------
     # Lifecycle
@@ -252,27 +213,6 @@ class PerfMetrics:
             self.p95_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 95)
             self.p99_cpu_ram_delta_mb = percentile(self._rss_delta_samples_mb, 99)
 
-        if self.response_times_ms:
-            self.p50_response_time_ms = percentile(self.response_times_ms, 50)
-            self.p95_response_time_ms = percentile(self.response_times_ms, 95)
-            self.p99_response_time_ms = percentile(self.response_times_ms, 99)
-
-        if self.per_log_throughputs:
-            self.p50_per_log_throughput_logs_per_second = percentile(self.per_log_throughputs, 50)
-            self.p95_per_log_throughput_logs_per_second = percentile(self.per_log_throughputs, 95)
-            self.p99_per_log_throughput_logs_per_second = percentile(self.per_log_throughputs, 99)
-            # For throughput, lower values are the worse tail. These are the
-            # throughput equivalents of P95/P99 latency.
-            self.p05_per_log_throughput_logs_per_second = percentile(self.per_log_throughputs, 5)
-            self.p01_per_log_throughput_logs_per_second = percentile(self.per_log_throughputs, 1)
-
-    def record_response_time(self, seconds: float):
-        """Record response time and derived per-log throughput for one log line."""
-        seconds = max(0.0, seconds)
-        self.response_times_ms.append(seconds * 1000.0)
-        if seconds > 0:
-            self.per_log_throughputs.append(1.0 / seconds)
-
     # Call this once per inference result
     def record_tokens(self, usage: dict):
         self.total_prompt_tokens     += usage.get("prompt_tokens", 0)
@@ -322,15 +262,6 @@ class PerfMetrics:
             "time_taken_seconds"        : round(self.time_taken_seconds, 3),
             "avg_time_per_log_ms"       : round(self.avg_time_per_log_ms, 3),
             "throughput_logs_per_second": round(self.throughput_logs_per_second, 2),
-            "response_time_samples"     : len(self.response_times_ms),
-            "p50_response_time_ms"      : round(self.p50_response_time_ms, 3),
-            "p95_response_time_ms"      : round(self.p95_response_time_ms, 3),
-            "p99_response_time_ms"      : round(self.p99_response_time_ms, 3),
-            "p50_per_log_throughput_logs_per_second": round(self.p50_per_log_throughput_logs_per_second, 3),
-            "p95_per_log_throughput_logs_per_second": round(self.p95_per_log_throughput_logs_per_second, 3),
-            "p99_per_log_throughput_logs_per_second": round(self.p99_per_log_throughput_logs_per_second, 3),
-            "p05_tail_throughput_logs_per_second"   : round(self.p05_per_log_throughput_logs_per_second, 3),
-            "p01_tail_throughput_logs_per_second"   : round(self.p01_per_log_throughput_logs_per_second, 3),
             "cpu_ram_used_mb"           : round(self.cpu_ram_used_mb, 2),
             "peak_cpu_memory_mb"        : round(self.peak_cpu_memory_mb, 2),
             "cpu_cores_available"      : self.cpu_cores_available,
@@ -357,13 +288,6 @@ class PerfMetrics:
         print(f"  Time taken             : {d['time_taken_seconds']:.3f} s")
         print(f"  Avg time per log       : {d['avg_time_per_log_ms']:.1f} ms")
         print(f"  Throughput             : {d['throughput_logs_per_second']:.2f} logs/s")
-        print(f"  P50 response time      : {d['p50_response_time_ms']:.1f} ms")
-        print(f"  P95 response time      : {d['p95_response_time_ms']:.1f} ms")
-        print(f"  P99 response time      : {d['p99_response_time_ms']:.1f} ms")
-        print(f"  P95 per-log throughput : {d['p95_per_log_throughput_logs_per_second']:.2f} logs/s")
-        print(f"  P99 per-log throughput : {d['p99_per_log_throughput_logs_per_second']:.2f} logs/s")
-        print(f"  P5 tail throughput     : {d['p05_tail_throughput_logs_per_second']:.2f} logs/s")
-        print(f"  P1 tail throughput     : {d['p01_tail_throughput_logs_per_second']:.2f} logs/s")
         print(f"  CPU RAM consumed       : {d['cpu_ram_used_mb']:.1f} MB"
               + ("" if _HAS_PSUTIL else "  (install psutil: pip install psutil)"))
         print(f"  Peak CPU RAM           : {d['peak_cpu_memory_mb']:.1f} MB")
@@ -516,29 +440,17 @@ def _repr_minimal(raw: str, parsed: dict) -> str:
     )
 
 def _repr_4column(raw: str, parsed: dict) -> str:
-    """Mode '4column': type  component  level  content."""
+    """Mode '5column': type  component  level  content."""
     return (
-        f"type={parsed['type']}  "
         f"comp={parsed['component']}  "
-        f"level={parsed['level']}  "
         f"{parsed['content']}"
     )
-
-
-def _repr_2column(raw: str, parsed: dict) -> str:
-    """Mode '2column': level  content only."""
-    return (
-        f"level={parsed['level']}  "
-        f"{parsed['content']}"
-    )
-
 
 _MODE_REPR = {
     "full"    : _repr_full,
     "extended": _repr_extended,
     "minimal" : _repr_minimal,
     "4column" : _repr_4column,
-    "2column" : _repr_2column,
 }
 
 
@@ -550,9 +462,8 @@ def build_prompt(raw_line: str, unlabelled: bool, mode: str) -> str:
     ----------
     raw_line   : original text of the log line
     unlabelled : True when the file has no leading label column
-    mode       : one of 'full', 'extended', 'minimal', '4column', '2column'
+    mode       : one of 'full', 'extended', 'minimal', '4column'
     """
-    mode = normalize_mode(mode)
     if mode not in _MODE_REPR:
         raise ValueError(f"Unknown mode '{mode}'. Choose from: {MODES}")
 
@@ -707,7 +618,6 @@ _MODE_DESC = {
     "extended": "node + type + component + level + content",
     "minimal" : "node + component + level + content",
     "4column" : "type + component + level + content",
-    "2column" : "level + content",
 }
 
 
@@ -735,7 +645,6 @@ def run_eval(args):
         if not os.path.exists(p):
             sys.exit(f"[ERROR] File not found: {p}")
 
-    args.mode = normalize_mode(args.mode)
     if args.mode not in MODES:
         sys.exit(f"[ERROR] --mode must be one of: {', '.join(MODES)}")
 
@@ -782,8 +691,6 @@ def run_eval(args):
     perf        = PerfMetrics(gguf_path=args.gguf)
     y_pred      = []
     raw_outputs = []
-    response_times_ms = []
-    per_log_throughputs = []
     errors      = []
     report_n    = max(1, len(records) // 20)
     debug_left  = args.debug
@@ -807,7 +714,6 @@ def run_eval(args):
                       f"abnormal: {y_pred.count('1')}  ETA {eta:.0f}s", flush=True)
 
         prompt = build_prompt(rec["raw_line"], unlabelled, args.mode)
-        t_response_start = time.perf_counter()
 
         try:
             out  = llm(
@@ -824,15 +730,8 @@ def run_eval(args):
             raw, pred = "", "?"
             errors.append((i, str(exc)))
 
-        response_seconds = time.perf_counter() - t_response_start
-        perf.record_response_time(response_seconds)
-        response_time_ms = response_seconds * 1000.0
-        per_log_throughput = (1.0 / response_seconds) if response_seconds > 0 else 0.0
-
         y_pred.append(pred)
         raw_outputs.append(raw)
-        response_times_ms.append(response_time_ms)
-        per_log_throughputs.append(per_log_throughput)
         perf.sample_memory()
         # Debug output
         if debug_left > 0:
@@ -881,15 +780,8 @@ def run_eval(args):
                 meta.update(eval_dict)
             fh.write(json.dumps(meta) + "\n")
 
-            for rec, pred, raw, latency_ms, log_tput in zip(
-                records, y_pred, raw_outputs, response_times_ms, per_log_throughputs
-            ):
-                row = {
-                    "label": pred,
-                    "line": rec["raw_line"],
-                    "response_time_ms": round(latency_ms, 3),
-                    "per_log_throughput_logs_per_second": round(log_tput, 3),
-                }
+            for rec, pred, raw in zip(records, y_pred, raw_outputs):
+                row = {"label": pred, "line": rec["raw_line"]}
                 if not unlabelled:
                     row["true_label"] = rec["label"]
                     row["correct"]    = rec["label"] == pred
@@ -917,15 +809,13 @@ def _build_parser():
                    help="Path to the GGUF model file.")
     p.add_argument("--test",       required=True,
                    help="Path to the log file (.log) or labelled JSONL (.jsonl).")
-    p.add_argument("--mode",       default="minimal",
+    p.add_argument("--mode",       choices=MODES, default="minimal",
                    help=(
                        "Inference mode — what is sent to the LLM.\n"
                        "  full      : complete raw log line\n"
                        "  extended  : node + type + component + level + content\n"
                        "  minimal   : node + component + level + content\n"
                        "  4column   : type + component + level + content\n"
-                       "  2column   : level + content only\n"
-                       "Aliases accepted: '2 column', '2-column', '2_column'.\n"
                    ))
     p.add_argument("--gpu_layers", type=int, default=0)
     p.add_argument("--threads",    type=int, default=os.cpu_count() or 4)
