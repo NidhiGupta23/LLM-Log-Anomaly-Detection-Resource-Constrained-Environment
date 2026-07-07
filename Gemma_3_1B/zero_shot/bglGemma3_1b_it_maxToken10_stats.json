@@ -1,0 +1,17 @@
+{
+  "total_logs": 500,
+  "time_taken_seconds": 5135.343647003174,
+  "avg_time_per_log_ms": 10270.687294006348,
+  "throughput_logs_per_second": 0.09736446757400245,
+  "memory_consumed_mb": 2034.0234375,
+  "peak_cpu_memory_mb": 2731.69140625,
+  "gpu_memory_mb": 0,
+  "normal_count": 42,
+  "abnormal_count": 458,
+  "normal_percentage": 8.4,
+  "abnormal_percentage": 91.60000000000001,
+  "model_used": "google/gemma-3-1b-it",
+  "batch_size": 4,
+  "temperature": 0.6,
+  "gpu_available": false
+}

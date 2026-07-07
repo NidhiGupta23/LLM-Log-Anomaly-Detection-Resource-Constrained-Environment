@@ -1,0 +1,51 @@
+#!/bin/bash
+# This script runs Python files sequentially
+
+# Exit immediately if a command fails
+set -e
+
+#python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeFull_v1.json --mode full
+#python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeExtended_v1.json --mode extended
+#python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf   --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeMinimal_v1.json --mode minimal
+#python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeOriginal_v1.json
+
+#python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeFull_v2.json --mode full
+#python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeExtended_v2.json --mode extended
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf   --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeMinimal_v2.json --mode minimal
+python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_modeOriginal_v2.json
+
+
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4_K_M500logs_modeFull_v1.json --mode full
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeExtended_v1.json --mode extended
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeMinimal_v1.json --mode minimal
+python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeOriginal_v1.json
+
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4_K_M500logs_modeFull_v2.json --mode full
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeExtended_v2.json --mode extended
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeMinimal_v2.json --mode minimal
+python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4500logs_modeOriginal_v2.json
+
+
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeFull_v1.json --mode full
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeExtended_v1.json --mode extended
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf   --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeMinimal_v1.json --mode minimal
+python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeOriginal_v1.json
+
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeFull_v2.json --mode full
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeExtended_v2.json --mode extended
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf   --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeMinimal_v2.json --mode minimal
+python3 EvaluationBGL1_5B_F16.py   --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8500logs_modeOriginal_v2.json
+
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_mode2column_v1.json --mode 2column
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q4_K_M.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_16gguf500logs_mode2column_v2.json --mode 2column
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4gguf500logs_mode2column_v1.json --mode 2column
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b.f16.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q4gguf500logs_mode2column_v2.json --mode 2column
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8gguf500logs_mode2column_v1.json --mode 2column
+python3 EvalBGLF16_updated_token.py  --gguf /root/.cache/huggingface/hub/models--NidhiGupta23--Llama-3.2-3B-Instruct/snapshots/542e71437dfbed201819b59e1c43ded52b55bcec/bgl_llama3_3b_Q8_0.gguf  --test ../../Deepseek_R1_Distill_Qwen_1.5B/Fine_tune/Test_500_no_label_sorted.log --output llama3_Q8gguf500logs_mode2column_v2.json --mode 2column 
+
+
+
+
+
+
+
