@@ -1,0 +1,18 @@
+{
+  "mode": "few_shot",
+  "total_logs": 500,
+  "max_token": 10,
+  "time_taken_seconds": 12865.682029247284,
+  "avg_time_per_log_ms": 25731.364058494568,
+  "throughput_logs_per_second": 0.038863077671542054,
+  "memory_consumed_mb": 6404.42578125,
+  "peak_cpu_memory_mb": 6962.515625,
+  "gpu_memory_mb": 0,
+  "normal_count": 432,
+  "abnormal_count": 68,
+  "normal_percentage": 86.4,
+  "abnormal_percentage": 13.600000000000001,
+  "model_used": "meta-llama/Llama-3.2-3B-Instruct",
+  "batch_size": 4,
+  "gpu_available": false
+}
