@@ -1,0 +1,64 @@
+{
+    "bgl_sample-1_trainRatio-1.0-129_thrSearch-prc_C-Wcls-cos_coreSet-0": {
+        "f1_score": {
+            "K=1(all_each)": 0.8388214904679376,
+            "ColBERT(all_each)": 0.8273244781783681,
+            "mean ColBERT(all_each)": 0.18645418326693228
+        },
+        "roc_auc_score": {
+            "K=1(all_each)": 0.9902269861286255,
+            "ColBERT(all_each)": 0.9433724497062798,
+            "mean ColBERT(all_each)": 0.6475783282787754
+        },
+        "precision_score": {
+            "K=1(all_each)": 0.7223880597014926,
+            "ColBERT(all_each)": 0.7649122807017544,
+            "mean ColBERT(all_each)": 0.11549851924975321
+        },
+        "recall_score": {
+            "K=1(all_each)": 1.0,
+            "ColBERT(all_each)": 0.9008264462809917,
+            "mean ColBERT(all_each)": 0.4834710743801653
+        },
+        "accuracy_score": {
+            "K=1(all_each)": 0.9814,
+            "ColBERT(all_each)": 0.9818,
+            "mean ColBERT(all_each)": 0.7958
+        },
+        "coreSet_time": {
+            "K=1(all_each)": 0.10762810707092285,
+            "ColBERT(all_each)": 0.10762810707092285,
+            "mean ColBERT(all_each)": 0.10762810707092285
+        },
+        "maxsim_time": {
+            "K=1(all_each)": 3.7855703830718994,
+            "ColBERT(all_each)": 3.7855703830718994,
+            "mean ColBERT(all_each)": 3.7855703830718994
+        },
+        "lookup_all_adscore_time": {
+            "K=1(all_each)": 0.009401559829711914,
+            "ColBERT(all_each)": 0.009401559829711914,
+            "mean ColBERT(all_each)": 0.009401559829711914
+        },
+        "memory_mb": {
+            "K=1(all_each)": 759.69140625,
+            "ColBERT(all_each)": 759.69140625,
+            "mean ColBERT(all_each)": 759.69140625
+        },
+        "avg_response_time": {
+            "K=1(all_each)": 0.0007879678726196289,
+            "ColBERT(all_each)": 0.0007879678726196289,
+            "mean ColBERT(all_each)": 0.0007879678726196289
+        },
+        "overall_detection_time": {
+            "K=1(all_each)": 3.9398393630981445,
+            "ColBERT(all_each)": 3.9398393630981445,
+            "mean ColBERT(all_each)": 3.9398393630981445
+        },
+        "total_run_time": {
+            "K=1(all_each)": 4.272523641586304,
+            "ColBERT(all_each)": 4.272523641586304,
+            "mean ColBERT(all_each)": 4.272523641586304
+        }
+    }
+}
