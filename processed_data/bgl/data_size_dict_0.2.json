@@ -1,0 +1,5 @@
+{
+    "train_normal": 1857,
+    "test_normal": 4758,
+    "test_abnormal": 242
+}
