@@ -98,7 +98,7 @@ The following metrics are used for evaluation:
 6. Compare results across models and datasets
 
 ## Results
-The results for the 2 VMs can be observed in branch on 8GB and 16GB.
+The results for the 2 VMs can be observed in branch on 8GB_LLM and 16GB_LLM.
 
 ## References
 - RAPID: https://github.com/DSBA-Lab/RAPID
