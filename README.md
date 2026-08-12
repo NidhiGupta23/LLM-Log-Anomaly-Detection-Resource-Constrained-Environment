@@ -9,14 +9,12 @@ The models evaluated in this study include:
 - RAPID (from DSBA-Lab)
 - DeepSeek-R1-Distill-Qwen-1.5B
 - Qwen3-4B
-- Tiny-LLM (To do)
-- LogLLM (To do)
+- Qwen2.5-0.5B-Instruct
+- Llama-3.2-3B-Instruct
 
-These models are tested across multiple datasets commonly used in log analysis and anomaly detection:
+These models are tested on below dataset commonly used in log analysis and anomaly detection:
 
 - BGL (Blue Gene/L)
-- HDFS (Hadoop Distributed File System)
-- Edge IIoT dataset
 
 The final outcome is a comparative analysis focusing on accuracy, efficiency, and suitability for deployment in constrained environments (e.g., limited GPU/CPU, memory, or edge devices).
 
@@ -46,10 +44,13 @@ A distilled version of DeepSeek-R1 built on Qwen architecture, optimized for eff
 
 A larger general-purpose LLM used as a baseline for comparison. Provides stronger reasoning capabilities at the cost of higher resource usage.
 
-### 4. LogLLM
-Repository: https://github.com/guanwei49/LogLLM/blob/master/README.md
+### 4. Qwen2.5-0.5B-Instruct
+Model: https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct
 
-A specialized LLM framework tailored for log understanding and anomaly detection tasks.
+Smallest LLM model to test if size can impact the performance
+
+### 5. Llama-3.2
+Model: https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
 
 
 ## Datasets
@@ -58,16 +59,6 @@ A specialized LLM framework tailored for log understanding and anomaly detection
 - High-performance computing system logs
 - Contains labeled anomalies
 - Widely used for benchmarking log anomaly detection
-
-### HDFS
-- Distributed system logs from Hadoop
-- Structured and semi-structured logs
-- Common benchmark for log parsing and anomaly detection
-
-### Edge IIoT Dataset
-- Industrial IoT logs
-- Reflects real-world edge computing constraints
-- Includes security and operational anomalies
 
 
 ## Experimental Setup
@@ -106,16 +97,17 @@ The following metrics are used for evaluation:
 5. Collect performance and resource usage metrics
 6. Compare results across models and datasets
 
+## Results
+The results for the 2 VMs can be observed in branch on 8GB and 16GB.
+
 ## References
 - RAPID: https://github.com/DSBA-Lab/RAPID
 - DeepSeek-R1-Distill-Qwen-1.5B: https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
-- LogLLM: https://github.com/guanwei49/LogLLM
+- Llama-3.2: https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
 - Qwen Models: https://huggingface.co/Qwen
 - Datasets:
 - BGL: https://github.com/logpai/loghub/tree/master/BGL
 - BGL: https://huggingface.co/datasets/logfit-project/BGL
-- Edge-IIoT: https://www.kaggle.com/datasets/mohamedamineferrag/edgeiiotset-cyber-security-dataset-of-iot-iiot/data
-- HDFS: https://github.com/logpai/loghub/tree/master/HDFS
 
 ## Author
 Nidhi Gupta
