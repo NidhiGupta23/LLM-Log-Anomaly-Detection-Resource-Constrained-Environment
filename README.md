@@ -41,17 +41,16 @@ Model: https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
 A distilled version of DeepSeek-R1 built on Qwen architecture, optimized for efficiency and reduced resource consumption.
 
 ### 3. Qwen3-4B
-
+Model: https://huggingface.co/Qwen/Qwen3.5-4B
 A larger general-purpose LLM used as a baseline for comparison. Provides stronger reasoning capabilities at the cost of higher resource usage.
 
 ### 4. Qwen2.5-0.5B-Instruct
 Model: https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct
-
-Smallest LLM model to test if size can impact the performance
+Smallest LLM model to test if size can impact the performance.
 
 ### 5. Llama-3.2
 Model: https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
-
+Since all the models were Chinese, an American model was used to test against the Chinese models.
 
 ## Datasets
 
@@ -161,6 +160,10 @@ These metrics allow classification performance to be evaluated together with com
 
 ## Results
 The results for the 2 VMs can be observed in branch on 8GB_LLM and 16GB_LLM.
+8GB_LLM: https://github.com/NidhiGupta23/LLM-Log-Anomaly-Detection-Resource-Constrained-Environment/tree/8GB_LLM
+16GB_LLM: https://github.com/NidhiGupta23/LLM-Log-Anomaly-Detection-Resource-Constrained-Environment/tree/16GB_LLM
+
+Fine-tuned models can be found at: https://huggingface.co/NidhiGupta23
 
 ### Key Findings
 
